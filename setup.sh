@@ -61,12 +61,32 @@ respone=${response,,}
 if [[ $response =~ ^(yes|y| ) ]]; then
     git clone https://gitlab.freedesktop.org/libnice/libnice
     cd libnice
+    sed -i -e 's/NICE_ADD_FLAG(\[-Wcast-align\])/# NICE_ADD_FLAG(\[-Wcast-align\])/g' ./configure.ac
+    sed -i -e 's/NICE_ADD_FLAG(\[-Wno-cast-function-type\])/# NICE_ADD_FLAG(\[-Wno-cast-function-type\])/g' ./configure.ac
     ./autogen.sh
     ./configure --prefix=/usr
     make && sudo make install
     cd ../
     rm -rf libnice/
 fi
+
+# Install Janus Gateway
+if [ ! -d "/opt/janus/" ]; then 
+    echo -e "${green}${bold}Installing Janus Gateway...${normal}${nc}"
+    git clone https://github.com/meetecho/janus-gateway.git
+    cd janus-gateway
+    sh autogen.sh
+    ./configure --prefix=/opt/janus
+    make
+    sudo make install
+    sudo make configs
+    cd ..
+    rm -rf janus-gateway
+    sudo cp ./janus.plugin.streaming.jcfg /opt/janus/etc/janus/
+else
+    echo -e "\n${green}${bold}Janus Gateway already installed.\n${normal}${nc}--- Streaming configurations are located in /opt/janus/etc/janus/"
+fi
+
 
 # Install virtualenv
 if [ ! -d "venv" ]; then
