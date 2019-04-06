@@ -1,0 +1,432 @@
+object {
+    display: block !important;
+    margin: auto !important;
+    /* border: 2px solid black; */
+    border-radius: 20px;
+    background-color: rgba(35, 35, 35, 1);
+}
+
+.rounded {
+    border-radius: 20px;
+}
+
+#start-stream {
+    display: block;
+    margin: auto !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    color: white;
+    text-align: center;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 2.2em;
+    text-decoration: none;
+    width: fit-content;
+}
+
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+    z-index: -1000;
+}
+
+body {
+    background-image: linear-gradient(rgba(35, 35, 37, 0) 50%, #232325), linear-gradient(70deg, #0e2b45 32%, #0e3f19);
+    background: linear-gradient(325deg, #021800, #1b0049, #000000);
+    background-size: 600% 600%;
+    -webkit-animation: GradientAnimation 16s ease infinite;
+    -moz-animation: GradientAnimation 16s ease infinite;
+    animation: GradientAnimation 16s ease infinite;
+    overflow-x: hidden;
+}
+
+@-webkit-keyframes GradientAnimation {
+    0% {
+        background-position: 9% 0%
+    }
+    50% {
+        background-position: 92% 100%
+    }
+    100% {
+        background-position: 9% 0%
+    }
+}
+
+@-moz-keyframes GradientAnimation {
+    0% {
+        background-position: 9% 0%
+    }
+    50% {
+        background-position: 92% 100%
+    }
+    100% {
+        background-position: 9% 0%
+    }
+}
+
+@keyframes GradientAnimation {
+    0% {
+        background-position: 9% 0%
+    }
+    50% {
+        background-position: 92% 100%
+    }
+    100% {
+        background-position: 9% 0%
+    }
+}
+
+#indicator {
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 2em;
+}
+
+.display-info {
+    color: white;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1em;
+    margin: 0;
+    float: right;
+}
+
+.button {
+    display: none;
+    margin: 50px auto 0;
+    width: 100px;
+    height: 100px;
+    border: 10px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    animation-name: fadein;
+    animation-duration: 1s;
+}
+
+.option-normal {
+    font-weight: 100 !important;
+}
+
+.inner {
+    background-color: #9e1919;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    transform: scale(0.94);
+}
+
+.inner-disabled {
+    background-color: rgb(80, 80, 80);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    transform: scale(0.94);
+    cursor: default;
+}
+
+.button.active .inner {
+    transform: scale(0.5);
+    border-radius: 12%;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+        margin-top: 500px;
+    }
+    to {
+        opacity: 1;
+        margin-top: 50px;
+    }
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 30px;
+    z-index: -999;
+}
+
+#right-footer {
+    display: inline-grid;
+    justify-items: right;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    padding: 30px;
+    z-index: 50;
+    float: right;
+    border-radius: 10px 0px 0px 0px;
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+#latest-thumbnail {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#toggle-fullscreen {
+    border-radius: 5px;
+}
+
+.hidden-element {
+    display: none !important;
+}
+
+.ui-dialog {
+    width: fit-content;
+    height: fit-content;
+}
+
+@keyframes FadeAnimation {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+@-o-keyframes FadeAnimation {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+@-moz-keyframes FadeAnimation {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+@-webkit-keyframes FadeAnimation {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+.element-fade {
+    -webkit-animation: FadeAnimation 1s infinite;
+    -moz-animation: FadeAnimation 1s infinite;
+    -o-animation: FadeAnimation 1s infinite;
+    animation: FadeAnimation 1s infinite;
+}
+
+.options-div {
+    display: none;
+}
+
+.options-btn {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    overflow: hidden;
+    margin: 0 auto;
+    margin-top: 10px;
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    background-color: rgb(26, 70, 83);
+    text-align: center;
+    cursor: pointer;
+}
+
+.options-btn .fa-cog {
+    margin-top: 6px;
+    font-size: 30px;
+    color: #F5E0B7;
+    opacity: 1;
+}
+
+.options-btn:hover {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    box-shadow: 0px 0px 0px 5px rgba(86, 23, 39, 0.5);
+    background-color: rgb(26, 70, 83);
+}
+
+.options-btn:hover .fa-cog {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    transform: rotate(360deg);
+}
+
+.options-btn.active {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    box-shadow: none;
+    opacity: .7;
+    animation: none;
+}
+
+.options-btn.active .fa-cog {
+    margin-top: 50px;
+    transform: rotate(0deg);
+}
+
+.options {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    width: 300px;
+    height: 0px;
+    background-color: rgb(26, 70, 83);
+    margin: 0 auto;
+    border-radius: 10px;
+    margin-top: 10px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.options .fa-cog {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    margin-top: 0px;
+    margin-left: 200px;
+    font-size: 200px;
+    color: #F5E0B7;
+    opacity: 0;
+}
+
+.disabled {
+    color: #888 !important;
+    cursor: default;
+}
+
+.options.open {
+    height: 110px;
+    padding: 5px;
+}
+
+.options.open .fa-cog {
+    opacity: 1;
+    transform: rotate(-60deg);
+}
+
+.options .slider {
+    width: 21px;
+    height: 50px;
+    margin-top: -190px;
+    margin-left: 10px;
+    border-radius: 4px;
+    background-color: #FFFCF9;
+    padding-top: 1px;
+    cursor: pointer;
+}
+
+.options .slider .toggle {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    height: 15px;
+    width: 15px;
+    border-radius: 4px;
+    float: center;
+    margin-left: 2.5px;
+    margin-top: 32px;
+    background-color: #352D39;
+}
+
+.options .slider.slide .toggle {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    margin-top: 2px;
+}
+
+.option-disabled, .options-disabled:visited, .options-disabled:active, .options-disabled:focus {
+    border-bottom: none !important;
+    cursor: default !important;
+}
+
+.options-item, .options-item:visited, .options-item:active, .options-item:focus {
+    display: block !important;
+    margin-left: 10px;
+    color: white;
+    text-align: center;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1.2em;
+    text-decoration: none;
+    width: fit-content;
+    border-bottom: 1px dotted white;
+}
+
+.options-item:hover {
+    display: block !important;
+    margin-left: 10px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1.2em;
+    text-decoration: none;
+    width: fit-content;
+    border-bottom: 1px solid white;
+}
+
+.warning {
+    color: red !important;
+    border-bottom: 1px dotted red !important;
+}
+
+.warning:hover {
+    color: red !important;
+    border-bottom: 1px solid red !important;
+}
+
+.dropdown-modal-option {
+    padding-bottom: 10px;
+}
+
+.option-on {
+    color: rgb(0, 255, 0) !important;
+}
+
+.option-caution {
+    color: rgb(238, 255, 0) !important;
+}
+
+.option-warning {
+    color: rgb(255, 0, 0) !important;
+}
+
+.modal-dialog {
+    position: fixed !important;
+    top: auto;
+    right: auto;
+    left: auto;
+    bottom: 0;
+    margin: auto !important;
+}
+
+.modal-backdrop.in {
+    filter: alpha(opacity=05) !important;
+    opacity: .05 !important;
+}
+
+.ui-widget-overlay {
+    display: none !important;
+}
