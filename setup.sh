@@ -4,48 +4,60 @@ BC=$'\e[4m'
 EC=$'\e[0m'
 
 bold=$(tput bold)
-ital=$(tput sitm)
 normal=$(tput sgr0)
 red='\033[0;31m'
 green='\033[0;32m'
-ltcyan='\033[0;96m'
 nc='\033[0m'
 
 set -e
 
+declare -A reqs=([libsrtp2]=0 [libnice]=0)
+
+echo -e "${green}${bold}\nChecking for required libs...${normal}${nc}"
+
+for i in "${!reqs[@]}"
+do
+    ldconfig -p | grep "${i,,}" >/dev/null 2>&1 && {
+        echo -e "${green}${bold}$i is installed!${normal}${nc}
+        reqs[$i]=1
+    } || {
+        echo -e "${red}${bold}$i is not installed!${normal}${nc}"
+    }
+done
+
 echo -e "${green}${bold}\nInstalling pre-requisites...${normal}${nc}"
 
 sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev libogg-dev libcurl4-openssl-dev liblua5.2-dev libconfig-dev pkg-config gengetopt libtool automake gtk-doc-tools
-
 sudo apt-get -y install python-dev
 sudo apt-get -y install pigpio
 sudo apt-get -y install virtualenv
 
 sudo apt-get -y install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
 
-# (Optional) Install OpenSSL 1.1.1
-echo -e "\n${green}${bold}OpenSSL > 1.1.0 is recommended. Install OpenSSL v1.1.1? \nInstallation may take a while.\n\n${normal}${nc}Current version:"
-openssl version
-echo
-
-read -p "Install? (y/n) " response
-response=${response,,}
-if [[ $response =~ ^(yes|y| ) ]]; then
-    wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
-    tar xvf openssl-1.1.1.tar.gz
-    cd openssl-1.1.1
-    sudo ./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)'
-    sudo make
-    sudo make install
-    cd ..
-    rm -rf openssl-1.1.1*
+# (Recommended) Install OpenSSL 1.1.1
+OPENSSL_VERSION=$(openssl version | cut -d ' ' -f 2 | tr -dc '0-9')
+if [ $OPENSSL_VERSION -lt 111 ]; then
+    echo -e "\n${green}${bold}OpenSSL v1.1.1 is recommended.\n\n${normal}${nc}Current version:"
+    openssl version
+    echo
+    
+    read -p "Install OpenSSL v1.1.1? Installation may take a while. (y/n) " response
+    response=${response,,}
+    if [[ $response =~ ^(yes|y| ) ]]; then
+        wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
+        tar xvf openssl-1.1.1.tar.gz
+        cd openssl-1.1.1
+        sudo ./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)'
+        sudo make
+        sudo make install
+        cd ..
+        rm -rf openssl-1.1.1*
+    fi
 fi
 
 # Install libsrtp2
-echo -e "\n${green}${bold}Install libsrtp2? If this is your first time running this script, the answer is probably yes.\n${normal}${nc}"
-read -p "Install? (y/n) " response
-response=${response,,}
-if [[ $response =~ ^(yes|y| ) ]]; then
+if [ ${reqs[libsrtp2]} -eq 0 ]; then
+    echo -e "\n${green}${bold}Installing libsrtp2...\n${normal}${nc}"
     wget https://github.com/cisco/libsrtp/archive/v2.2.0.tar.gz
     tar xvf v2.2.0.tar.gz
     cd libsrtp-2.2.0
@@ -57,14 +69,15 @@ if [[ $response =~ ^(yes|y| ) ]]; then
 fi
 
 # Install libnice
-echo -e "\n${green}${bold}Install libnice? If this is your first time running this script, the answer is probably yes.\n${normal}${nc}"
-read -p "Install (y/n) " response
-respone=${response,,}
-if [[ $response =~ ^(yes|y| ) ]]; then
+if [ ${reqs[libnice]} -eq 0 ]; then
+    echo -e "\n${green}${bold}Installing libnice...\n${normal}${nc}"
     git clone https://gitlab.freedesktop.org/libnice/libnice
     cd libnice
+    
+    # Raspbian specific fix
     sed -i -e 's/NICE_ADD_FLAG(\[-Wcast-align\])/# NICE_ADD_FLAG(\[-Wcast-align\])/g' ./configure.ac
     sed -i -e 's/NICE_ADD_FLAG(\[-Wno-cast-function-type\])/# NICE_ADD_FLAG(\[-Wno-cast-function-type\])/g' ./configure.ac
+    
     ./autogen.sh
     ./configure --prefix=/usr
     make && sudo make install
@@ -107,8 +120,8 @@ echo "# NEXT STEPS                                                   #"
 echo "################################################################"
 echo ""
 echo "Activate the python virtual environment:"
-echo -e "${ltcyan}${bold}. venv/bin/activate${normal}${nc}"
+echo -e "${bold}. venv/bin/activate${normal}"
 echo ""
 echo "Launch the web app:"
-echo -e "${ltcyan}${bold}./run.sh${normal}${nc} or ${ltcyan}${bold}./run.sh remote${normal}${nc}"
+echo -e "${bold}./run.sh${normal} or ${bold}./run.sh remote${normal}"
 echo ""
