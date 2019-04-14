@@ -53,7 +53,7 @@ function startJanus(callback) {
                             streaming = pluginHandle;
                             Janus.log("Plugin attached! (" + streaming.getPlugin() + ", id=" + streaming.getId() + ")");
 
-                            selectedStream = 1; // Hardcoded since there should only be the one stream
+                            selectedStream = 222; // Hardcoded since there should only be the one stream
                             startStream();
 
                             $('#start-stream').click(function () {

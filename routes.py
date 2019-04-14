@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 from threading import Thread, Event
 from flask_socketio import SocketIO, emit
 from subprocess import call
@@ -7,7 +9,6 @@ import binascii
 import os.path
 from os.path import isfile, join
 import sys
-import zmq
 from functools import wraps
 from flask import Flask, render_template, after_this_request, json, request, flash, redirect, Response, make_response, send_file, session
 from custom_autodoc import CustomAutodoc as Autodoc
@@ -30,7 +31,7 @@ app.secret_key = os.urandom(24)
 
 ###############
 app.config['FLASK_HOST'] = 'localhost'
-test_ips = ['localhost', '192.168.0.69']
+test_ips = ['localhost', '192.168.0.15']
 ###############
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -43,7 +44,7 @@ thread = Thread()
 thread_stop_event = Event()
 
 # base location of captured images
-images_dir = '~/images/'
+images_dir = '/home/pi/images/'
 
 
 class SocketThread(Thread):
@@ -103,9 +104,9 @@ def get_status():
     data['total'] = total
     data['used'] = used
     data['percent'] = percent
-    data['acq_size'] = str(image_count)
-    data['camera_status'] = ignore or "raspivid" in subprocess.check_output(
-        'ps aux')
+    data['acq_size'] = image_count
+    data['camera_status'] = ignore
+    #print data
     return json.dumps(data)
 
 
@@ -176,18 +177,22 @@ def drive():
 
 @socketio.on('connect', namespace='/raztot')
 def socket_connect():
-    global thread
-    thread_stop_event.clear()
+    #global thread
+    #thread_stop_event.clear()
 
-    if not thread.isAlive():
-        thread = SocketThread()
-        thread.start()
-        print('##### CONNECTED ####')
+    #if not thread.isAlive():
+    #    thread = SocketThread()
+    #    thread.start()
+    print('##### CONNECTED ####')
+
+@socketio.on('poll', namespace='/raztot')
+def poll():
+    socketio.emit('status', get_status(), namespace='/raztot', broadcast=True)
 
 
 @socketio.on('disconnect', namespace='/raztot')
 def socket_disconnect():
-    thread_stop_event.set()
+    #thread_stop_event.set()
     print('!!!! DISCONNECTED !!!!')
 
 
@@ -198,8 +203,9 @@ def camera():
         can_run = not is_running()
 
         if can_run and app.config['FLASK_HOST'] != 'localhost':
-            ipoz_proc = "/home/nvidia/emc_wrapper.sh /home/nvidia/tegra_multimedia_api/samples/JetsonHWAccel/IPOZ_App/main_test.exe"
-            subprocess.Popen(ipoz_proc.split())
+            print 'Starting stream...'
+            stream_proc = "/home/pi/raztot/run_video.sh"
+            subprocess.Popen(stream_proc.split())
 
         return Response('{"response":"Success"}', status=200, mimetype='application/json')
 

@@ -7,7 +7,7 @@ if [[ $# -eq 0 ]]; then
         read -p "Run Janus Gateway? (y/n) " yn
         case $yn in
             [Yy]* )
-                sudo /opt/janus/bin/janus --debug-level=7 -F ./janus_conf &
+                sudo /opt/janus/bin/janus &#--debug-level=7 -F ./janus_conf &
                 break
                 ;;
             [Nn]* )

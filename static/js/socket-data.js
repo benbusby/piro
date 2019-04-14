@@ -1,10 +1,13 @@
 $(document).ready(function () {
     // Connect to the socket server
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/drive-state');
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/raztot', {timeout: 5000});
+
+    socket.emit('poll');
 
     // Receieve status messages through socket connection
     socket.on('status', function (msg) {
         msg = JSON.parse(msg);
+	//console.log(msg);
 
         // Always show main drive state, even if not streaming
         $('#drive-state').html(msg['used'] + ' / ' + msg['total'] +
@@ -38,6 +41,10 @@ $(document).ready(function () {
         } else {
             $('#acq-name').html("Acquisition Status: N/A");
         }
+
+	setTimeout(function() {
+	    socket.emit('poll');
+	}, 500);
     });
 
     $(window).bind('beforeunload', function () {
