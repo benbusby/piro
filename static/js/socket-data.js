@@ -47,12 +47,9 @@ $(document).ready(function () {
             }
         }
 
-        // Show acquisition status if streaming
-        if (isStreaming) {
-            $('#acq-name').html("\"" + msg['current_acq'] + "\": " + msg['acq_size'] + " images");
-        } else {
-            $('#acq-name').html("Acquisition Status: N/A");
-        }
+        // Show image count
+	$('#acq-name').html(msg['acq_size']);
+	$('#temperature-status').html(msg['temp']);
 
         setTimeout(function () {
             socket.emit('poll');

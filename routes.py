@@ -111,14 +111,14 @@ def get_status():
     data['used'] = used
     data['percent'] = percent
     data['acq_size'] = image_count
-    data['camera_status'] = ignore
-    # print data
+    data['camera_status'] = True#is_running()
+    data['temp'] = subprocess.check_output('vcgencmd measure_temp'.split()).replace('temp=', '')
     return json.dumps(data)
 
 
 def is_running():
     for pid in psutil.process_iter():
-        if "raspivid" in pid.name():
+        if "gst-launch-1.0" in pid.name():
             return True
     return False
 
@@ -199,20 +199,17 @@ def poll():
 
 @socketio.on('move', namespace='/raztot')
 def move(data):
-    print("Received move data: " + str(data))
     if data is None:
         pi.set_servo_pulsewidth(SERVO_L, 0)
         pi.set_servo_pulsewidth(SERVO_R, 0)
     elif data.get('left') or data.get('right'):
-        pi.set_servo_pulsewidth(SERVO_L, data.get('left') * 2000)
+        pi.set_servo_pulsewidth(SERVO_L, data.get('left') * 1000)
         pi.set_servo_pulsewidth(SERVO_R, data.get('right') * 2000)
     else:
         pi.set_servo_pulsewidth(SERVO_L, 2000 if data.get(
             'up') else 1000 * data.get('down'))
-        pi.set_servo_pulsewidth(SERVO_R, 2000 if data.get(
-            'up') else 1000 * data.get('down'))
-
-    print("Received move command: " + str(data))
+        pi.set_servo_pulsewidth(SERVO_R, 1000 if data.get(
+            'up') else 2000 * data.get('down'))
 
 
 @socketio.on('disconnect', namespace='/raztot')
