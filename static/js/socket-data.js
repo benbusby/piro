@@ -14,7 +14,7 @@ $(document).ready(function () {
     }
 
     document.onkeyup = function (event) {
-        socket.emit('move');
+        socket.emit('move', null);
     }
 
     // Receieve status messages through socket connection

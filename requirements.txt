@@ -4,3 +4,4 @@ psutil
 flask_selfdoc
 socketio
 eventlet
+pigpio

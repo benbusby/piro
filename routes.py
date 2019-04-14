@@ -43,12 +43,13 @@ socketio = SocketIO(app)
 # drive info ws thread
 thread = Thread()
 thread_stop_event = Event()
+pi = pigpio.pi()
 
 # base location of captured images
 images_dir = '/home/pi/images/'
 
 # GPIO pins for servos
-SERVO_L = 15
+SERVO_L = 17
 SERVO_R = 22
 
 
@@ -199,11 +200,10 @@ def poll():
 @socketio.on('move', namespace='/raztot')
 def move(data):
     print("Received move data: " + str(data))
-    pi = pigpio.pi()
     if data is None:
         pi.set_servo_pulsewidth(SERVO_L, 0)
         pi.set_servo_pulsewidth(SERVO_R, 0)
-    if data.get('left') or data.get('right'):
+    elif data.get('left') or data.get('right'):
         pi.set_servo_pulsewidth(SERVO_L, data.get('left') * 2000)
         pi.set_servo_pulsewidth(SERVO_R, data.get('right') * 2000)
     else:
