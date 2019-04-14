@@ -1,13 +1,25 @@
 $(document).ready(function () {
     // Connect to the socket server
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/raztot', {timeout: 5000});
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/raztot', { timeout: 5000 });
 
     socket.emit('poll');
+
+    document.onkeydown = function (event) {
+        socket.emit('move', {
+            left: event.keyCode == "37" ? 1 : 0,
+            up: event.keyCode == "38" ? 1 : 0,
+            right: event.keyCode == "39" ? 1 : 0,
+            down: event.keyCode == "40" ? 1 : 0
+        });
+    }
+
+    document.onkeyup = function (event) {
+        socket.emit('move');
+    }
 
     // Receieve status messages through socket connection
     socket.on('status', function (msg) {
         msg = JSON.parse(msg);
-	//console.log(msg);
 
         // Always show main drive state, even if not streaming
         $('#drive-state').html(msg['used'] + ' / ' + msg['total'] +
@@ -42,9 +54,9 @@ $(document).ready(function () {
             $('#acq-name').html("Acquisition Status: N/A");
         }
 
-	setTimeout(function() {
-	    socket.emit('poll');
-	}, 500);
+        setTimeout(function () {
+            socket.emit('poll');
+        }, 500);
     });
 
     $(window).bind('beforeunload', function () {

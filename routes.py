@@ -19,6 +19,7 @@ import time
 from time import sleep
 import json
 import shutil
+import pigpio
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
@@ -45,6 +46,10 @@ thread_stop_event = Event()
 
 # base location of captured images
 images_dir = '/home/pi/images/'
+
+# GPIO pins for servos
+SERVO_L = 15
+SERVO_R = 22
 
 
 class SocketThread(Thread):
@@ -106,7 +111,7 @@ def get_status():
     data['percent'] = percent
     data['acq_size'] = image_count
     data['camera_status'] = ignore
-    #print data
+    # print data
     return json.dumps(data)
 
 
@@ -178,21 +183,41 @@ def drive():
 @socketio.on('connect', namespace='/raztot')
 def socket_connect():
     #global thread
-    #thread_stop_event.clear()
+    # thread_stop_event.clear()
 
-    #if not thread.isAlive():
+    # if not thread.isAlive():
     #    thread = SocketThread()
     #    thread.start()
     print('##### CONNECTED ####')
+
 
 @socketio.on('poll', namespace='/raztot')
 def poll():
     socketio.emit('status', get_status(), namespace='/raztot', broadcast=True)
 
 
+@socketio.on('move', namespace='/raztot')
+def move(data):
+    print("Received move data: " + str(data))
+    pi = pigpio.pi()
+    if data is None:
+        pi.set_servo_pulsewidth(SERVO_L, 0)
+        pi.set_servo_pulsewidth(SERVO_R, 0)
+    if data.get('left') or data.get('right'):
+        pi.set_servo_pulsewidth(SERVO_L, data.get('left') * 2000)
+        pi.set_servo_pulsewidth(SERVO_R, data.get('right') * 2000)
+    else:
+        pi.set_servo_pulsewidth(SERVO_L, 2000 if data.get(
+            'up') else 1000 * data.get('down'))
+        pi.set_servo_pulsewidth(SERVO_R, 2000 if data.get(
+            'up') else 1000 * data.get('down'))
+
+    print("Received move command: " + str(data))
+
+
 @socketio.on('disconnect', namespace='/raztot')
 def socket_disconnect():
-    #thread_stop_event.set()
+    # thread_stop_event.set()
     print('!!!! DISCONNECTED !!!!')
 
 
@@ -203,7 +228,7 @@ def camera():
         can_run = not is_running()
 
         if can_run and app.config['FLASK_HOST'] != 'localhost':
-            print 'Starting stream...'
+            print('Starting stream...')
             stream_proc = "/home/pi/raztot/run_video.sh"
             subprocess.Popen(stream_proc.split())
 
