@@ -1,9 +1,9 @@
 object {
     display: block !important;
     margin: auto !important;
-    /* border: 2px solid black; */
+    border: 5px dashed black;
     border-radius: 20px;
-    background-color: rgba(35, 35, 35, 1);
+    /*background-color: rgba(225, 225, 225, 1);*/
 }
 
 .rounded {
@@ -33,49 +33,11 @@ object {
 }
 
 body {
-    background-image: linear-gradient(rgba(35, 35, 37, 0) 50%, #232325), linear-gradient(70deg, #0e2b45 32%, #0e3f19);
-    background: linear-gradient(325deg, #021800, #1b0049, #000000);
-    background-size: 600% 600%;
-    -webkit-animation: GradientAnimation 16s ease infinite;
-    -moz-animation: GradientAnimation 16s ease infinite;
-    animation: GradientAnimation 16s ease infinite;
-    overflow-x: hidden;
-}
-
-@-webkit-keyframes GradientAnimation {
-    0% {
-        background-position: 9% 0%
-    }
-    50% {
-        background-position: 92% 100%
-    }
-    100% {
-        background-position: 9% 0%
-    }
-}
-
-@-moz-keyframes GradientAnimation {
-    0% {
-        background-position: 9% 0%
-    }
-    50% {
-        background-position: 92% 100%
-    }
-    100% {
-        background-position: 9% 0%
-    }
-}
-
-@keyframes GradientAnimation {
-    0% {
-        background-position: 9% 0%
-    }
-    50% {
-        background-position: 92% 100%
-    }
-    100% {
-        background-position: 9% 0%
-    }
+    /*background-image: url(/static/img/background.png);
+    background-size: 50px;
+    background-repeat: repeat;*/
+    background-color: #641E16 !important;
+    overflow: hidden;
 }
 
 #indicator {

@@ -111,7 +111,7 @@ def get_status():
     data['used'] = used
     data['percent'] = percent
     data['acq_size'] = image_count
-    data['camera_status'] = True#is_running()
+    data['camera_status'] = 'detected=1' in subprocess.check_output('vcgencmd get_camera'.split())
     data['temp'] = subprocess.check_output('vcgencmd measure_temp'.split()).replace('temp=', '')
     return json.dumps(data)
 
@@ -226,7 +226,7 @@ def camera():
 
         if can_run and app.config['FLASK_HOST'] != 'localhost':
             print('Starting stream...')
-            stream_proc = "/home/pi/raztot/run_video.sh"
+            stream_proc = "/home/pi/raztot/stream.sh"
             subprocess.Popen(stream_proc.split())
 
         return Response('{"response":"Success"}', status=200, mimetype='application/json')

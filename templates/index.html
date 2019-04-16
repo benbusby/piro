@@ -23,33 +23,12 @@
     <a class="" href="" onclick="return false;" id="start-stream" type="button">Start Stream</a>
     <object id="stream-object" width="960" height="540">
     </object>
-    <div class="button">
-        <div id="recording-button" class="inner"></div>
-    </div>
-    <div class="options-div">
-        <div class="options-btn" onclick="this.classList.toggle('active')"><i class="fa fa-cog"></i>
-        </div>
-        <div class="options">
-            <a class="options-item" href="" onclick="return false;" id="update-camera" type="button" data-toggle="modal"
-                data-backdrop="false" data-target="#cameraSettingsModal">Change Camera Settings</a>
-            <a class="options-item" href="" onclick="return false;" id="download-data" type="button">Download Data</a>
-            <a class="options-item" href="" onclick="document.getElementById('file-upload').click(); return false;" id="upload-update"
-                type="button">Update System</a>
-            <input type="file" id="file-upload" name="upload" style="visibility: hidden; width: 1px; height: 1px"
-                multiple />
-            <a class="options-item warning" href="" onclick="return false;" id="clear-drive" type="button">Clear Drive</a>
-        </div>
-    </div>
-    <p id="indicator"></p>
     <div style="width: 50%" id="footer">
         <img style="width: 40%" src="./static/img/raztot.svg">
     </div>
     <div id="right-footer">
         <p class="display-info"> Camera Status:
             <b class="option-normal" id="camera-state">Offline</b></p>
-        <p class="display-info">Drive State:
-            <b class="option-normal" id="drive-state">??? / ??? GB remaining</b>
-        </p>
         <p class="display-info">Images:
 	    <b class="option-normal" id="acq-name">N/A</b>
         </p>
@@ -61,6 +40,9 @@
         </p>
         <p class="display-info" id="demo-socket">Stream Rate:
             <b class="option-normal" id="curbitrate">0 kbits/sec</b>
+        </p>
+	<p class="display-info">Storage:
+            <b class="option-normal" id="drive-state">??? / ??? GB remaining</b>
         </p>
         <p class="display-info" id="current-version">Version:
             <b class="option-normal" id="version-num">X.X.X</b>

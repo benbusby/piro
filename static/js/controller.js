@@ -75,6 +75,9 @@ $(document).ready(function () {
                         $("#start-stream").html('Start Stream');
                         $("#param-embed").remove();
                         $("#stream-embed").remove();
+			$("#remotevideo").fadeOut(300, function() {
+			    $(this).remove();
+			});
                         isStreaming = false;
                     },
                     error: function () {
