@@ -38,6 +38,15 @@ function stopStream() {
 }
 
 function startJanus(callback) {
+    if (streaming != null) {
+        Janus.log("Plugin attached! (" + streaming.getPlugin() + ", id=" + streaming.getId() + ")");
+        selectedStream = 222;
+        startStream();
+
+        typeof callback === 'function' && callback(true);
+        return;
+    }
+
     // Initialize the library (all console debuggers enabled)
     Janus.init({
         debug: "all", callback: function () {
@@ -58,8 +67,10 @@ function startJanus(callback) {
 
                             $('#start-stream').click(function () {
                                 $(this).attr('disabled', true);
+                                
                                 clearInterval(bitrateTimer);
-                                janus.destroy();
+                                //janus.destroy();
+                                stopStream();
                             });
 
                             typeof callback === 'function' && callback(true);
