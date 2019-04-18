@@ -17,7 +17,7 @@ if [[ $# -eq 0 ]]; then
         esac
     done
 
-    python routes.py ${network_ip[0]}
+    python routes.py 0.0.0.0 #${network_ip[0]}
 elif [[ $1 == "remote" ]]; then
     sudo -u pi -H bash -c "/opt/janus/bin/janus --debug-level=7 -F /home/nvidia/JetsonStreaming/janus_conf &"
     sudo -u pi -H bash -c ". /home/nvidia/JetsonStreaming/streaming/venv/bin/activate; python /home/nvidia/JetsonStreaming/streaming/routes.py ${network_ip[0]} &"

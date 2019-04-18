@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Connect to the socket server
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/raztot', { timeout: 5000 });
+    var socket = io.connect('https://' + document.domain + ':' + location.port + '/raztot', { timeout: 5000 });
 
     socket.emit('poll');
 

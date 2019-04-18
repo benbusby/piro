@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     // Get current version number
     var request = new XMLHttpRequest();
-    request.open('GET', "http://" + window.location.hostname + ":" + window.location.port + "/static/misc/current_version.txt", true);
+    request.open('GET', "https://" + window.location.hostname + ":" + window.location.port + "/static/misc/current_version.txt", true);
     request.send(null);
     request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status === 200) {

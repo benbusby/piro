@@ -20,6 +20,8 @@ from time import sleep
 import json
 import shutil
 import pigpio
+import requests
+from requests import get
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
@@ -31,8 +33,8 @@ auto = Autodoc(app)
 app.secret_key = os.urandom(24)
 
 ###############
-app.config['FLASK_HOST'] = 'localhost'
-test_ips = ['localhost', '192.168.0.15']
+app.config['FLASK_HOST'] = '0.0.0.0'
+test_ips = ['localhost', '192.168.0.14']
 ###############
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -218,6 +220,48 @@ def socket_disconnect():
     print('!!!! DISCONNECTED !!!!')
 
 
+def _proxy(request, path, path2):
+    resp = requests.request(
+        method=request.method,
+        url='http://127.0.0.1:8088/janus/' + (path if path is not None else '') + ('/' + path2 if path2 is not None else ''),
+        headers={key: value for (key, value) in request.headers if key != 'Host'},
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=True)
+
+    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+    headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+
+    response = Response(resp.content, resp.status_code, headers)
+    return response
+
+@app.route('/janus/<path>', methods=['GET', 'POST'])
+def janus_poll(path):
+    return _proxy(request, path, None)
+
+
+@app.route('/janus/<path>/<path2>', methods=['GET', 'POST'])
+def janus_poll2(path, path2):
+    return _proxy(request, path, path2)
+
+
+@app.route('/janus', methods=['GET', 'POST'])
+def janus():
+    #resp = requests.request(
+    #    method=request.method,
+    #    url=request.url.replace(request.host_url, 'http://127.0.0.1:8088/'),
+    #    headers={key: value for (key, value) in request.headers if key != 'Host'},
+    #    data=request.get_data(),
+    #    cookies=request.cookies,
+    #    allow_redirects=True)
+
+    #excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+    #headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+
+    #response = Response(resp.content, resp.status_code, headers)
+    return _proxy(request, None, None)
+
+
 @app.route('/camera', methods=['PUT', 'POST', 'DELETE'])
 @auto.doc()
 def camera():
@@ -253,4 +297,4 @@ def documentation():
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         app.config['FLASK_HOST'] = str(sys.argv[1])
-    socketio.run(app, host=app.config['FLASK_HOST'], port=8000)
+    socketio.run(app, host=app.config['FLASK_HOST'], port=80)
