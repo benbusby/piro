@@ -18,7 +18,7 @@ echo -e "${green}${bold}\nChecking for required libs...${normal}${nc}"
 for i in "${!reqs[@]}"
 do
     ldconfig -p | grep "${i,,}" >/dev/null 2>&1 && {
-        echo -e "${green}${bold}$i is installed!${normal}${nc}
+        echo -e "${green}${bold}$i is installed!${normal}${nc}"
         reqs[$i]=1
     } || {
         echo -e "${red}${bold}$i is not installed!${normal}${nc}"
