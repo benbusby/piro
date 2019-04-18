@@ -23,6 +23,10 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]]; then
         python routes.py ${network_ip[0]}
     elif [[ $1 == "remote" ]]; then
         python routes.py # default ip in routes is already 0.0.0.0
+    else
+        echo "Invalid argument provided."
+        exit 1
+    fi
 elif [[ $1 == "service" ]]; then
     # Start up all necessary services if executing as a systemd service
     sudo -u pi -H bash -c "pigpiod"
