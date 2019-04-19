@@ -1,31 +1,14 @@
 // Layout related values
-var referenceTime = -1;
-var startTime = -1;
-var stopTime = -1;
 var isRecording = false;
 var isStreaming = false;
 var isDownloading = false;
 var isFullscreen = false;
 
-// Camera constants
-var STREAM_SET = 0;
-var ACQ_SET = 1;
-var DWNLD_SET = 2;
-var EXP_SET = 3;
-var AUTOEXP_SET = 4;
-var AGAIN_SET = 5;
-var DGAIN_SET = 6;
-var APP_EXIT = 7;
-var WB_KR_SET = 8;
-var WB_KB_SET = 9;
-var WB_KG_SET = 10;
-
-// Ensure page is loaded before monitoring any user input
 $(document).ready(function () {
 
     // Get current version number
     var request = new XMLHttpRequest();
-    request.open('GET', "https://" + window.location.hostname + ":" + window.location.port + "/static/misc/current_version.txt", true);
+    request.open('GET', "/static/misc/current_version.txt", true);
     request.send(null);
     request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status === 200) {
@@ -33,14 +16,16 @@ $(document).ready(function () {
         }
     }
 
+    // Starts janus session if camera is connected and not already streaming
     function janusSetup() {
         if (isStreaming) {
             toggleStream();
             return;
         }
 
+        // Uses vcgencmd get_camera to see if the camera is properly connected
         if ($("#start-stream").hasClass("disabled")) {
-            alert("Cannot start stream while camera is offline. Please connect the camera and try again.");
+            bootbox.alert("Cannot start stream without a connected camera. Please connect the camera and try again.");
             return;
         }
 
@@ -57,35 +42,17 @@ $(document).ready(function () {
             $("#recording-button").addClass("inner-disabled");
             $("#recording-button").removeClass("inner");
 
-            var formData = {
-                message_type: APP_EXIT,
-                video_run: false,
-                app_run: false
-            }
-
             // Send DELETE to the camera api to disable the stream
-            sendCameraSetting(formData, function () {
-                $.ajax({
-                    type: 'DELETE',
-                    url: '/camera',
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    success: function () {
-                        $("#start-stream").html('Start Stream');
-                        $("#param-embed").remove();
-                        $("#stream-embed").remove();
-			$("#remotevideo").fadeOut(300, function() {
-			    $(this).remove();
-			});
-                        isStreaming = false;
-                    },
-                    error: function () {
-                        console.error("Failed to kill stream");
-                        bootbox.alert("Failed to stop stream");
-                    }
+            sendCameraSetting('DELETE', new function () {
+                $("#start-stream").html('Start Stream');
+                $("#param-embed").remove();
+                $("#stream-embed").remove();
+                $("#remotevideo").fadeOut(300, function () {
+                    $(this).remove();
                 });
+                isStreaming = false;
             });
+
             return;
         }
 
@@ -103,31 +70,12 @@ $(document).ready(function () {
         $(".button").css('display', 'inherit');
         $(".options-div").css('display', 'inherit');
 
-        $.ajax({
-            type: 'POST',
-            url: '/camera',
-            contentType: false,
-            cache: false,
-            processData: false,
-            success: function (data) {
-                setTimeout(function () {
-                    sendCameraSetting({
-                        message_type: STREAM_SET,
-                        video_run: true,
-                        app_run: true
-                    });
-                }, 3000);
-            },
-            error: function (e) {
-                console.error(e);
-                bootbox.alert("There was an error retrieving the stream.");
-            }
+        sendCameraSetting('POST', new function () {
+            console.log("Successfully started stream");
         });
-
-        return false;
     }
 
-    // Pauses live stream and begins download for all recently captured images
+    // Pauses live stream and begins download for all recently captured videos
     function startDownload() {
         if (isDownloading) {
             return;
@@ -190,52 +138,43 @@ $(document).ready(function () {
     // Starts/stops capture -- starting capture acquires images from the stream at ~1hz
     function toggleRecord() {
         if (!isStreaming) {
-            bootbox.alert("Must be streaming to toggle image acquisition.");
+            bootbox.alert("Must be streaming to begin recording.");
             return;
         }
 
         $(".button").toggleClass("active");
 
         if (!isRecording) {
-            isRecording = true;
-            $("#indicator").html("Capturing");
-            $("#indicator").addClass("element-fade");
+            sendCameraSetting('PUT', new function () {
+                isRecording = true;
+                $("#indicator").html("Capturing");
+                $("#indicator").addClass("element-fade");
 
-            $("#acquisition-status").html("On");
-            $("#acquisition-status").addClass("option-on");
-
-            sendCameraSetting({
-                message_type: ACQ_SET,
-                acq_run: true,
-                app_run: true
-            });
+                $("#acquisition-status").html("On");
+                $("#acquisition-status").addClass("option-on");
+            }, { record: true });
         } else {
-            isRecording = false;
-            $("#toggle-record").removeAttr("background-color");
-            $("#indicator").html("");
-            $("#indicator").removeClass("element-fade");
+            sendCameraSetting('PUT', new function () {
+                isRecording = false;
+                $("#toggle-record").removeAttr("background-color");
+                $("#indicator").html("");
+                $("#indicator").removeClass("element-fade");
 
-            $("#acquisition-status").html("Off");
-            $("#acquisition-status").removeClass("option-on");
-
-            var formData = {
-                message_type: ACQ_SET,
-                acq_run: false,
-                app_run: true
-            };
-            sendCameraSetting(formData);
+                $("#acquisition-status").html("Off");
+                $("#acquisition-status").removeClass("option-on");
+            }, { record: false });
         }
     }
 
-    // Updates a single setting for the camera
-    function sendCameraSetting(formData, callback) {
+    // Updates camera to start, stop, or record a stream
+    function sendCameraSetting(method, callback, data) {
         $.ajax({
-            type: 'PUT',
+            type: method,
             url: '/camera',
             contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(formData),
             cache: false,
+            dataType: "json",
+            data: JSON.stringify(data),
             processData: false,
             success: function (data) {
                 typeof callback === 'function' && callback();
@@ -247,36 +186,9 @@ $(document).ready(function () {
         });
     }
 
-    // Fetches the most recent color thumbnail to display in a dialog
-    function refreshThumbnail() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/camera', true);
-        xhr.responseType = "blob";
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.response.type !== 'application/json') {
-                    // Create an object url to replace the img src
-                    $("#latest-thumbnail").attr("src", URL.createObjectURL(xhr.response));
-                } else {
-                    console.error(xhr.response.type);
-                }
-            }
-        };
-
-        xhr.onerror = function () {
-            bootbox.alert("Unable to retrieve thumbnail.");
-        }
-        xhr.send();
-    }
-
     // ----------------------------------------------------------------------------------
     // Click Handlers
     // ----------------------------------------------------------------------------------
-    $("#show-thumbnail").click(function () {
-        $('#dialog').dialog('open');
-        refreshThumbnail();
-    });
-
     $("#toggle-fullscreen").click(function () {
         if (!isStreaming) {
             alert("Must be streaming to toggle fullscreen mode.");
@@ -327,27 +239,7 @@ $(document).ready(function () {
         $('#param-embed').remove();
         $('#stream-embed').remove();
 
-        formData = {
-            message_type: APP_EXIT,
-            video_run: false,
-            app_run: false
-        }
-
-        sendCameraSetting(formData, function () {
-            $.ajax({
-                type: 'DELETE',
-                url: '/camera',
-                contentType: false,
-                cache: false,
-                processData: false,
-                success: function () {
-                    console.log("Successfully killed stream");
-                },
-                error: function () {
-                    console.error("Failed to kill stream");
-                }
-            });
-        });
+        sendCameraSetting('DELETE');
     });
 
     $(".options-btn").on("click", function () {
@@ -377,57 +269,5 @@ $(document).ready(function () {
             });
         }
     });
-
-    function handleUpdate() {
-        var fileSelect = document.getElementById('file-upload');
-        var fileList = Array.from(fileSelect.files);
-        var formData = new FormData();
-        var xhr = new XMLHttpRequest();
-
-        let keyFile = fileList.find(x => x.name === 'key.bin.enc');
-        let updateFile = fileList.find(x => x.name === 'data.zip.enc');
-        let scriptFile = fileList.find(x => x.name === 'decrypt_upload.sh.enc');
-
-        if (fileList.length === 2 && updateFile && keyFile) {
-            formData.append("update_file", updateFile);
-            formData.append("key_file", keyFile);
-
-            xhr.open('POST', '/update', true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    bootbox.alert("Update file(s) successfully integrated -- please refresh this page for changes to take effect.");
-                } else if (xhr.readyState === 4 && xhr.status === 403) {
-                    alert("Unable to update system using the provided files. Please make sure you included both the tar file and random key, and that they are the same pair that was originally sent to you.");
-                    return;
-                }
-            }
-
-            xhr.onerror = function (e) {
-                bootbox.alert("Unable to upload update file. " + e);
-            }
-        } else if (fileList.length === 2 && scriptFile && keyFile) {
-            formData.append("update_script", scriptFile);
-            formData.append("key_file", keyFile);
-
-            xhr.open('POST', '/update', true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    bootbox.alert("Update file successfully integrated.");
-                } else if (xhr.readyState === 4 && xhr.status === 403) {
-                    alert("Unable to update the installation script. Please ensure that the binary file has not been modified since initial receipt.");
-                    return;
-                }
-            }
-
-            xhr.onerror = function (e) {
-                bootbox.alert("Unable to upload update file. " + e);
-            }
-        } else {
-            alert("Unrecognized file upload. Please try again.");
-            return;
-        }
-
-        xhr.send(formData);
-    }
 });
 

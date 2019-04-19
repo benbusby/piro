@@ -25,6 +25,7 @@ from requests import get
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'uploads')
 
 #-----[ APP CONFIGURATION AND ROUTING ]-----#
 app = Flask(__name__)
@@ -106,15 +107,15 @@ def get_status():
     percent = disk_status.percent
     image_count = len(os.listdir(images_dir))
 
-    ignore = app.config['FLASK_HOST'] in test_ips or is_running()
-
     data = {}
     data['total'] = total
     data['used'] = used
     data['percent'] = percent
     data['acq_size'] = image_count
-    data['camera_status'] = 'detected=1' in subprocess.check_output('vcgencmd get_camera'.split())
-    data['temp'] = subprocess.check_output('vcgencmd measure_temp'.split()).replace('temp=', '')
+    data['camera_status'] = 'detected=1' in subprocess.check_output(
+        'vcgencmd get_camera'.split())
+    data['temp'] = subprocess.check_output(
+        'vcgencmd measure_temp'.split()).replace('temp=', '')
     return json.dumps(data)
 
 
@@ -185,12 +186,6 @@ def drive():
 
 @socketio.on('connect', namespace='/raztot')
 def socket_connect():
-    #global thread
-    # thread_stop_event.clear()
-
-    # if not thread.isAlive():
-    #    thread = SocketThread()
-    #    thread.start()
     print('##### CONNECTED ####')
 
 
@@ -223,17 +218,23 @@ def socket_disconnect():
 def _proxy(request, path, path2):
     resp = requests.request(
         method=request.method,
-        url='http://127.0.0.1:8088/janus/' + (path if path is not None else '') + ('/' + path2 if path2 is not None else ''),
-        headers={key: value for (key, value) in request.headers if key != 'Host'},
+        url='http://127.0.0.1:8088/janus/' +
+            (path if path is not None else '') +
+        ('/' + path2 if path2 is not None else ''),
+        headers={key: value for (key, value)
+                 in request.headers if key != 'Host'},
         data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=True)
 
-    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
-    headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+    excluded_headers = ['content-encoding',
+                        'content-length', 'transfer-encoding', 'connection']
+    headers = [(name, value) for (name, value) in resp.raw.headers.items()
+               if name.lower() not in excluded_headers]
 
     response = Response(resp.content, resp.status_code, headers)
     return response
+
 
 @app.route('/janus/<path>', methods=['GET', 'POST'])
 def janus_poll(path):
@@ -247,7 +248,7 @@ def janus_poll2(path, path2):
 
 @app.route('/janus', methods=['GET', 'POST'])
 def janus():
-    #resp = requests.request(
+    # resp = requests.request(
     #    method=request.method,
     #    url=request.url.replace(request.host_url, 'http://127.0.0.1:8088/'),
     #    headers={key: value for (key, value) in request.headers if key != 'Host'},
@@ -262,14 +263,14 @@ def janus():
     return _proxy(request, None, None)
 
 
-@app.route('/camera', methods=['PUT', 'POST', 'DELETE'])
+@app.route('/camera', methods=['GET', 'PUT', 'POST', 'DELETE'])
 @auto.doc()
 def camera():
+    '''
+    Starts, stops, records, and retrieves streams with gstreamer
+    '''
     if request.method == 'POST':
-        can_run = not is_running()
-
-        if can_run and app.config['FLASK_HOST'] != 'localhost':
-            print('Starting stream...')
+        if not is_running() and app.config['FLASK_HOST'] != 'localhost':
             stream_proc = "/home/pi/raztot/stream.sh"
             subprocess.Popen(stream_proc.split())
 

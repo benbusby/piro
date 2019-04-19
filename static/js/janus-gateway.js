@@ -25,7 +25,7 @@ function startStream() {
     var body = { "request": "watch", id: parseInt(selectedStream) };
     streaming.send({ "message": body });
     // No remote video yet
-    $('#stream').append('<video class="rounded centered" id="waitingvideo" width=960 height=540 />');
+    $('#stream').append('<video class="rounded centered" id="waitingvideo" />');
 }
 
 function stopStream() {
@@ -62,12 +62,13 @@ function startJanus(callback) {
                             streaming = pluginHandle;
                             Janus.log("Plugin attached! (" + streaming.getPlugin() + ", id=" + streaming.getId() + ")");
 
-                            selectedStream = 222; // Hardcoded since there should only be the one stream
+                            // Hardcoded to the raztot stream id in janus.plugin.streaming.jcfg
+                            selectedStream = 222;
                             startStream();
 
                             $('#start-stream').click(function () {
                                 $(this).attr('disabled', true);
-                                
+
                                 clearInterval(bitrateTimer);
                                 //janus.destroy();
                                 stopStream();
@@ -150,7 +151,7 @@ function startJanus(callback) {
                             var addButtons = false;
                             if ($('#remotevideo').length === 0) {
                                 addButtons = true;
-                                $('#stream-object').html('<video class="rounded centered hide" id="remotevideo" width=960 height=540 autoplay playsinline/>');
+                                $('#stream-object').html('<video class="rounded centered hide" id="remotevideo" autoplay playsinline/>');
 
                                 // Show the stream and hide the spinner when we get a playing event
                                 $("#remotevideo").bind("playing", function () {

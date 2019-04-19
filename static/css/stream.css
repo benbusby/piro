@@ -1,9 +1,16 @@
-object {
+#stream-object {
     display: block !important;
     margin: auto !important;
     border: 5px dashed black;
     border-radius: 20px;
     /*background-color: rgba(225, 225, 225, 1);*/
+    width: 960px;
+    height: 540px;
+}
+
+#remotevideo {
+    width: 960px;
+    height: 540px;
 }
 
 .rounded {
@@ -27,7 +34,7 @@ object {
     position: fixed;
     right: 0;
     bottom: 0;
-    min-width: 100%; 
+    min-width: 100%;
     min-height: 100%;
     z-index: -1000;
 }
@@ -391,4 +398,15 @@ body {
 
 .ui-widget-overlay {
     display: none !important;
+}
+
+@media (max-height: 720px) {
+    #stream-object {
+        width: 720px;
+        height: 405px;
+    }
+    #remotevideo {
+        width: 720px;
+        height: 405px;
+    }
 }
