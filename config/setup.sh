@@ -9,6 +9,8 @@ red='\033[0;31m'
 green='\033[0;32m'
 nc='\033[0m'
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 set -e
 
 declare -A reqs=([libsrtp2]=0 [libnice]=0)
@@ -27,12 +29,19 @@ done
 
 echo -e "${green}${bold}\nInstalling pre-requisites...${normal}${nc}"
 
+# Janus related requirements
 sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev libogg-dev libcurl4-openssl-dev liblua5.2-dev libconfig-dev pkg-config gengetopt libtool automake gtk-doc-tools
+
+# RazTot/Flask requirements
 sudo apt-get -y install python-dev
 sudo apt-get -y install pigpio
 sudo apt-get -y install virtualenv
-sudo apt-get -y install apache2 libapache2-mod-wsgi
 
+# NGINX setup
+sudo apt-get -y install nginx
+sudo /etc/init.d/nginx start
+
+# Video streaming requirements
 sudo apt-get -y install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
 
 # (Recommended) Install OpenSSL 1.1.1
@@ -98,16 +107,16 @@ if [ ! -d "/opt/janus/" ]; then
     sudo make configs
     cd ..
     rm -rf janus-gateway
-    sudo cp ./janus.plugin.streaming.jcfg /opt/janus/etc/janus/
+    sudo cp $SCRIPT_DIR/janus.plugin.streaming.jcfg /opt/janus/etc/janus/
 else
     echo -e "\n${green}${bold}Janus Gateway already installed.\n${normal}${nc}--- Streaming configurations are located in /opt/janus/etc/janus/"
 fi
 
 
 # Install virtualenv
-if [ ! -d "venv" ]; then
+if [ ! -d "$SCRIPT_DIR/../venv" ]; then
     echo -e "${green}${bold}\nSetting up python virtual environment...${normal}${nc}"
-    virtualenv --python=/usr/bin/python2 venv
+    virtualenv --python=/usr/bin/python2 $SCRIPT_DIR/../venv
 fi
 
 # Install all python requirements

@@ -1,5 +1,6 @@
 // Janus gateway values
 var server = '/janus';
+
 //if (window.location.protocol === 'http:') {
 //    server = "http://" + window.location.hostname + ":8088/janus";
 //} else {

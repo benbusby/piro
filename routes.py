@@ -1,4 +1,6 @@
 #!/usr/bin/env python2.7
+from gevent import monkey
+monkey.patch_all()
 
 from threading import Thread, Event
 from flask_socketio import SocketIO, emit
@@ -11,7 +13,9 @@ from os.path import isfile, join
 import sys
 from functools import wraps
 from flask import Flask, render_template, after_this_request, json, request, flash, redirect, Response, make_response, send_file, session
-from custom_autodoc import CustomAutodoc as Autodoc
+
+from utils.custom_autodoc import CustomAutodoc as Autodoc
+
 import psutil
 import os
 from os import listdir
@@ -20,8 +24,7 @@ from time import sleep
 import json
 import shutil
 import pigpio
-import requests
-from requests import get
+import grequests
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
@@ -211,56 +214,7 @@ def move(data):
 
 @socketio.on('disconnect', namespace='/raztot')
 def socket_disconnect():
-    # thread_stop_event.set()
     print('!!!! DISCONNECTED !!!!')
-
-
-def _proxy(request, path, path2):
-    resp = requests.request(
-        method=request.method,
-        url='http://127.0.0.1:8088/janus/' +
-            (path if path is not None else '') +
-        ('/' + path2 if path2 is not None else ''),
-        headers={key: value for (key, value)
-                 in request.headers if key != 'Host'},
-        data=request.get_data(),
-        cookies=request.cookies,
-        allow_redirects=True)
-
-    excluded_headers = ['content-encoding',
-                        'content-length', 'transfer-encoding', 'connection']
-    headers = [(name, value) for (name, value) in resp.raw.headers.items()
-               if name.lower() not in excluded_headers]
-
-    response = Response(resp.content, resp.status_code, headers)
-    return response
-
-
-@app.route('/janus/<path>', methods=['GET', 'POST'])
-def janus_poll(path):
-    return _proxy(request, path, None)
-
-
-@app.route('/janus/<path>/<path2>', methods=['GET', 'POST'])
-def janus_poll2(path, path2):
-    return _proxy(request, path, path2)
-
-
-@app.route('/janus', methods=['GET', 'POST'])
-def janus():
-    # resp = requests.request(
-    #    method=request.method,
-    #    url=request.url.replace(request.host_url, 'http://127.0.0.1:8088/'),
-    #    headers={key: value for (key, value) in request.headers if key != 'Host'},
-    #    data=request.get_data(),
-    #    cookies=request.cookies,
-    #    allow_redirects=True)
-
-    #excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
-    #headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
-
-    #response = Response(resp.content, resp.status_code, headers)
-    return _proxy(request, None, None)
 
 
 @app.route('/camera', methods=['GET', 'PUT', 'POST', 'DELETE'])
@@ -271,7 +225,8 @@ def camera():
     '''
     if request.method == 'POST':
         if not is_running() and app.config['FLASK_HOST'] != 'localhost':
-            stream_proc = "/home/pi/raztot/stream.sh"
+            print('Starting stream...')
+            stream_proc = "/home/pi/raztot/utils/stream.sh"
             subprocess.Popen(stream_proc.split())
 
         return Response('{"response":"Success"}', status=200, mimetype='application/json')
@@ -298,4 +253,4 @@ def documentation():
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         app.config['FLASK_HOST'] = str(sys.argv[1])
-    socketio.run(app, host=app.config['FLASK_HOST'], port=80)
+    socketio.run(app, host=app.config['FLASK_HOST'], port=8000)
