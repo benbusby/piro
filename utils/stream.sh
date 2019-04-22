@@ -8,4 +8,4 @@ function cleanup {
 
 trap cleanup EXIT
 
-gst-launch-1.0 -v rpicamsrc vflip=true hflip=true metering-mode=3 exposure-mode=11 awb-mode=1 keyframe-interval=1 preview=0 ! video/x-h264,width=1280,height=720,framerate=15/1,profile=baseline ! h264parse config-interval=1 ! rtph264pay config-interval=-1 pt=96 ! udpsink host=127.0.0.1 port=8004 
+gst-launch-1.0 -v rpicamsrc vflip=true hflip=true preview=false bitrate=3000000 keyframe-interval=10 ! video/x-h264, framerate=20/1 ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host=127.0.0.1 port=8004 

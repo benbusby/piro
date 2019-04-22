@@ -230,7 +230,6 @@ $(document).ready(function () {
         }
     });
 
-    $("#refresh-thumbnail").on('click', refreshThumbnail);
     $("#start-stream").on('click', janusSetup);
     $(".button").on('click', toggleRecord);
     $("#download-data").on('click', startDownload);
@@ -249,8 +248,6 @@ $(document).ready(function () {
     $(".slider").on("click", function () {
         $(".background").toggleClass("expand");
     });
-
-    $("input:file").change(handleUpdate);
 
     $("#clear-drive").on("click", function () {
         if (confirm("Are you sure you want to proceed with clearing the drive?")) {

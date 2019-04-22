@@ -11,6 +11,7 @@
 #remotevideo {
     width: 960px;
     height: 540px;
+    object-fit: contain;
 }
 
 .rounded {
