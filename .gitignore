@@ -1,5 +1,9 @@
 .vscode/
 
+# User auth files
+migrations/
+*.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
