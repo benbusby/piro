@@ -20,10 +20,10 @@ echo -e "${green}${bold}\nChecking for required libs...${normal}${nc}"
 for i in "${!reqs[@]}"
 do
     ldconfig -p | grep "${i,,}" >/dev/null 2>&1 && {
-        echo -e "${green}${bold}$i is installed!${normal}${nc}"
+        echo -e "${green}${bold}$i already installed!${normal}${nc}"
         reqs[$i]=1
     } || {
-        echo -e "${red}${bold}$i is not installed!${normal}${nc}"
+        echo -e "${red}${bold}$i is not installed${normal}${nc}"
     }
 done
 
@@ -38,8 +38,14 @@ sudo apt-get -y install pigpio
 sudo apt-get -y install virtualenv
 
 # NGINX setup
-sudo apt-get -y install nginx
-sudo /etc/init.d/nginx start
+if [ ! -d "/etc/nginx/" ]; then 
+    sudo apt-get -y install nginx
+    sudo /etc/init.d/nginx start
+    sudo cp nginx_server.conf /etc/nginx/sites-available/default
+    sudo /etc/init.d/nginx restart
+else
+    echo -e "\n${green}${bold}NGINX already set up.\n${normal}${nc}"
+fi
 
 # Video streaming requirements
 sudo apt-get -y install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
