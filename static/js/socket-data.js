@@ -48,8 +48,8 @@ $(document).ready(function () {
         }
 
         // Show image count
-	$('#acq-name').html(msg['acq_size']);
-	$('#temperature-status').html(msg['temp']);
+        $('#acq-name').html(msg['acq_size']);
+        $('#temperature-status').html(msg['temp']);
 
         setTimeout(function () {
             socket.emit('poll');
