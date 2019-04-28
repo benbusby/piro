@@ -1,0 +1,18 @@
+.login-container {
+    font-family: 'Roboto', sans-serif;
+    margin: 1em !important;
+    border-radius: 25px;
+    border: 7px solid #161616 !important;
+    background-color: rgba(35, 35, 35, 1);
+    padding: 35px;
+    padding-top: 23px;
+    display: table;
+    position: fixed;
+    left: 50%;
+    top: 35%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    transition: all 0.3s;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+}
+

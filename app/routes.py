@@ -1,10 +1,8 @@
 #!/usr/bin/env python2.7
-import grequests
+import functools
 import pigpio
 import shutil
 import json
-from time import sleep
-import time
 from os import listdir
 import os
 import psutil
@@ -20,6 +18,15 @@ import subprocess
 from subprocess import call
 from flask_socketio import SocketIO, emit
 from threading import Thread, Event
+
+from flask_login import current_user, login_user, logout_user, login_required
+from app.models import User
+from app.models import LoginForm
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+from app import app as app
+
 from gevent import monkey
 monkey.patch_all()
 
@@ -29,13 +36,12 @@ STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'captures')
 
 #-----[ APP CONFIGURATION AND ROUTING ]-----#
-app = Flask(__name__)
 auto = Autodoc(app)
 
 app.secret_key = os.urandom(24)
 
 ###############
-app.config['FLASK_HOST'] = '0.0.0.0'
+app.config['FLASK_HOST'] = os.environ.get('FLASK_HOST') or '0.0.0.0'
 test_ips = ['localhost', '192.168.0.14']
 ###############
 
@@ -43,10 +49,6 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # turn the flask app into a socketio app
 socketio = SocketIO(app)
-
-# drive info ws thread
-thread = Thread()
-thread_stop_event = Event()
 pi = pigpio.pi()
 
 # GPIO pins for servos
@@ -96,17 +98,42 @@ def add_header(response):
 ############################################################
 # FLASK ROUTES
 ############################################################
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect('/')
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data.lower()).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect('/login')
+        login_user(user)
+        return redirect('/')
+    return render_template('login.html', title='Sign In', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/login')
+
+
 @app.route('/')
 @auto.doc()
+@login_required
 def home():
     '''
-    The application's home page.
+    The RazTot's home page. Provides access to video streaming and motor control.
     '''
     return render_template('index.html')
 
 
 @app.route('/camera', methods=['GET', 'PUT', 'POST', 'DELETE'])
 @auto.doc()
+@login_required
 def camera():
     '''
     Starts (POST) or stops (DELETE) stream, or fetches (GET) the janus streaming api key
@@ -142,14 +169,26 @@ def documentation():
 
 
 ############################################################
-# WEBSOCKETS
+# SOCKETIO
 ############################################################
+def authenticated_only(f):
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+        if not current_user.is_authenticated:
+            disconnect()
+        else:
+            return f(*args, **kwargs)
+    return wrapped
+
+
 @socketio.on('connect', namespace='/raztot')
+@authenticated_only
 def socket_connect():
     print('##### CONNECTED ####')
 
 
 @socketio.on('poll', namespace='/raztot')
+@authenticated_only
 def poll():
     '''
     Fetches status messages for the Raspberry Pi.
@@ -158,6 +197,7 @@ def poll():
 
 
 @socketio.on('move', namespace='/raztot')
+@authenticated_only
 def move(data):
     '''
     Assuming mirrored motor setup for either side of the raztot, one side should turn
@@ -178,11 +218,10 @@ def move(data):
 
 
 @socketio.on('disconnect', namespace='/raztot')
+@authenticated_only
 def socket_disconnect():
     print('!!!! DISCONNECTED !!!!')
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        app.config['FLASK_HOST'] = str(sys.argv[1])
     socketio.run(app, host=app.config['FLASK_HOST'], port=8000)

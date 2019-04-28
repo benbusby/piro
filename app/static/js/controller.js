@@ -178,6 +178,32 @@ $(document).ready(function () {
         }
     }
 
+    var captureImage = function() {
+        if (!isStreaming) {
+            bootbox.alert("Must be streaming to take picture.");
+            return;
+        }
+
+        // Create canvas element to capture frame of video
+        var video = $("#remotevideo");
+        var canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth * scale;
+        canvas.height = video.videoHeight * scale;
+        canvas.getContext('2d')
+              .drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+        var filename = new Date().toISOString();
+        filename = filename.substring(0, filename.indexOf('.'));
+
+        // Save image with dummy anchor
+        var a = document.createElement('a');
+        a.href = dataURL;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+    };
+
     // Updates camera to start, stop, or record a stream
     function sendCameraSetting(method, callback, data) {
         $.ajax({
@@ -201,6 +227,8 @@ $(document).ready(function () {
     // ----------------------------------------------------------------------------------
     // Click Handlers
     // ----------------------------------------------------------------------------------
+    $("#capture").click(captureImage);
+
     $("#toggle-fullscreen").click(function () {
         if (!isStreaming) {
             alert("Must be streaming to toggle fullscreen mode.");

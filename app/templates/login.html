@@ -1,0 +1,41 @@
+<html class="no-js">
+
+<head>
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <link rel="stylesheet" href="/static/css/login.css">
+    <title>RazTot Login</title>
+</head>
+<body>
+{% block content %}
+    <div class="login-container">
+        <h2 style="color:white; margin: 0px; padding-bottom: 5px; border-bottom: 2px dotted white;">Log In</h2>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username.label }}<br>
+                {{ form.username(size=32) }}<br>
+                {% for error in form.username.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password(size=32) }}<br>
+                {% for error in form.password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <span style="color: white;">{{ message }}</span>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+{% endblock %}
+</body>
+

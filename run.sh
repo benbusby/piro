@@ -10,7 +10,7 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]]; then
         case $yn in
             [Yy]* )
 		echo "Using api key: $RANDOM_KEY"
-                sudo /opt/janus/bin/janus -a $RANDOM_KEY &#--debug-level=7 -F ./janus_conf &
+                sudo /opt/janus/bin/janus -a $RANDOM_KEY &
                 break
                 ;;
             [Nn]* )
@@ -22,18 +22,20 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]]; then
     
     # Start flask server either on local network or public
     if [[ $# -eq 0 ]]; then
-        python routes.py ${NETWORK_IP[0]}
+        export FLASK_HOST=${NETWORK_IP[0]}
     elif [[ $1 == "remote" ]]; then
-        python routes.py # default ip in routes is already 0.0.0.0
+        export FLASK_HOST="0.0.0.0"
     else
         echo "Invalid argument provided."
         exit 1
     fi
+
+    python server.py
 elif [[ $1 == "service" ]]; then
     # Start up all necessary services if executing as a systemd service
     sudo -u pi -H bash -c "pigpiod"
     sudo -u pi -H bash -c "/opt/janus/bin/janus &"
-    sudo -u pi -H bash -c ". /home/pi/raztot/venv/bin/activate; python /home/pi/raztot/routes.py &"
+    sudo -u pi -H bash -c ". /home/pi/raztot/venv/bin/activate; python /home/pi/raztot/server.py &"
 else
     echo "Invalid argument provided."
     exit 1

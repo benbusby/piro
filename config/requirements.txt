@@ -1,7 +1,12 @@
-Flask_SocketIO==3.0.0
-Flask==1.0.2
+Flask_SocketIO
+Flask
 psutil
 flask_selfdoc
-socketio
+python-socketio
 eventlet
 pigpio
+gevent
+flask_wtf
+flask-login
+flask-migrate
+flask-sqlalchemy

@@ -119,15 +119,48 @@ else
 fi
 
 
-# Install virtualenv
+# Set up virtual environment
 if [ ! -d "$SCRIPT_DIR/../venv" ]; then
     echo -e "${green}${bold}\nSetting up python virtual environment...${normal}${nc}"
-    virtualenv --python=/usr/bin/python2 $SCRIPT_DIR/../venv
+    python3 -m venv $SCRIPT_DIR/../venv
 fi
+
+source $SCRIPT_DIR/../venv
 
 # Install all python requirements
 echo -e "${green}${bold}\nInstalling required python libraries...${normal}${nc}"
-./venv/bin/pip install -r requirements.txt
+pip install -r requirements.txt
+
+# Setting up user account
+echo -e "${green}${bold}\nCreating flask database...${normal}${nc}"
+cd $SCRIPT_DIR/..
+flask db init
+flask db migrate -m "users table"
+flask db upgrade
+cd $SCRIPT_DIR
+
+while true; do
+    read -p "Create your user account now? This can be done later via utils/mod_users.py, but at least one account is required for the RazTot to be functional. (y/n) " yn
+    case $yn in
+        [Yy]* )
+            read -p "Username: " username
+            read -p -s "Password: " password
+            read -p -s "Confirm Password: " confirm_password
+            if [ "$password" == "$confirm_password" ]; then
+                python3 $SCRIPT_DIR/../utils/mod_users.py 
+                break
+            else
+                echo -e "${red}${bold}Passwords did not match!!!\n${normal}${nc}"
+            fi
+            ;;
+        [Nn]* )
+            echo ""
+            break
+            ;;
+    esac
+done
+
+
 
 echo -e "${green}${bold}\nCompleted RazTot setup.\n${normal}${nc}"
 
