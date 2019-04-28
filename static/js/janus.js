@@ -478,12 +478,14 @@ function Janus(gatewayCallbacks) {
 			longpoll = longpoll + "&token=" + encodeURIComponent(token);
 		if (apisecret !== null && apisecret !== undefined)
 			longpoll = longpoll + "&apisecret=" + encodeURIComponent(apisecret);
+        if (janusKey !== null && janusKey !== undefined) {
+            longpoll = longpoll + "&apisecret=" + encodeURIComponent(janusKey);
+        }
 		Janus.httpAPICall(longpoll, {
 			verb: 'GET',
 			withCredentials: withCredentials,
 			success: handleEvent,
 			timeout: longPollTimeout,
-			body: { "apisecret": janusKey },
 			error: function (textStatus, errorThrown) {
 				Janus.error(textStatus + ":", errorThrown);
 				retries++;

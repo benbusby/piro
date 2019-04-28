@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RANDOM_KEY=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo ''`
+export RANDOM_KEY=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo ''`
 NETWORK_IP=(`hostname -I`)
 
 if [[ $# -eq 0 ]] || [[ $1 == "remote" ]]; then
@@ -9,6 +9,7 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]]; then
         read -p "Run Janus Gateway? (y/n) " yn
         case $yn in
             [Yy]* )
+		echo "Using api key: $RANDOM_KEY"
                 sudo /opt/janus/bin/janus -a $RANDOM_KEY &#--debug-level=7 -F ./janus_conf &
                 break
                 ;;

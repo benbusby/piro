@@ -1,3 +1,6 @@
+// Main janus api key
+var janusKey;
+
 // Layout related values
 var isRecording = false;
 var isStreaming = false;
@@ -15,6 +18,15 @@ $(document).ready(function () {
             $("#version-num").html(request.responseText);
         }
     }
+
+    sendCameraSetting('GET', function (data) {
+	if (data.janus_key) {
+        janusKey = data.janus_key;
+	} else {
+        alert('Janus api key was unable to be found. Video streaming will not work.');
+	}
+	console.log(data.janus_key);
+    });
 
     // Starts janus session if camera is connected and not already streaming
     function janusSetup() {
@@ -177,10 +189,10 @@ $(document).ready(function () {
             data: JSON.stringify(data),
             processData: false,
             success: function (data) {
-                typeof callback === 'function' && callback();
+                typeof callback === 'function' && callback(data);
             },
             error: function () {
-                typeof callback === 'function' && callback();
+                typeof callback === 'function' && callback(data);
                 bootbox.alert("There was an error sending the provided camera settings. Please check your network connection and the provided values, and try again.");
             }
         });
