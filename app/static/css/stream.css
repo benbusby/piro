@@ -1,9 +1,7 @@
 #stream-object {
     display: block !important;
     margin: auto !important;
-    border: 5px dashed black;
-    border-radius: 20px;
-    /*background-color: rgba(225, 225, 225, 1);*/
+    outline: 5px dashed black;
     width: 960px;
     height: 540px;
 }
@@ -20,9 +18,9 @@
 
 #start-stream {
     display: block;
-    margin: auto !important;
-    margin-top: 10px !important;
-    margin-bottom: 10px !important;
+    margin: auto;
+    padding-top: .5em;
+    padding-bottom: .5em;
     color: white;
     text-align: center;
     font-family: 'Roboto Condensed', sans-serif;
@@ -31,19 +29,7 @@
     width: fit-content;
 }
 
-#myVideo {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    z-index: -1000;
-}
-
 body {
-    /*background-image: url(/static/img/background.png);
-    background-size: 50px;
-    background-repeat: repeat;*/
     background-color: #641E16 !important;
     overflow: hidden;
 }

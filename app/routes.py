@@ -1,4 +1,6 @@
 #!/usr/bin/env python2.7
+from app import app
+
 import functools
 import pigpio
 import shutil
@@ -16,7 +18,7 @@ import binascii
 import struct
 import subprocess
 from subprocess import call
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, disconnect
 from threading import Thread, Event
 
 from flask_login import current_user, login_user, logout_user, login_required
@@ -24,8 +26,6 @@ from app.models import User
 from app.models import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
-from app import app as app
 
 from gevent import monkey
 monkey.patch_all()
@@ -74,9 +74,9 @@ def get_status():
     data['percent'] = percent
     data['acq_size'] = image_count
     data['camera_status'] = 'detected=1' in subprocess.check_output(
-        'vcgencmd get_camera'.split())
+        'vcgencmd get_camera'.split()).decode('utf-8')
     data['temp'] = subprocess.check_output(
-        'vcgencmd measure_temp'.split()).replace('temp=', '')
+        'vcgencmd measure_temp'.split()).decode('utf-8').replace('temp=', '')
     return json.dumps(data)
 
 
@@ -223,5 +223,13 @@ def socket_disconnect():
     print('!!!! DISCONNECTED !!!!')
 
 
-if __name__ == '__main__':
+############################################################
+# RUNNING
+############################################################
+def main():
+    print('Running SocketIO app on ' + str(app.config['FLASK_HOST']) + '...')
     socketio.run(app, host=app.config['FLASK_HOST'], port=8000)
+
+
+if __name__ == '__main__':
+    main()

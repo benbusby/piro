@@ -44,7 +44,7 @@ function startStream() {
     var body = { "request": "watch", id: parseInt(selectedStream) };
     streaming.send({ "message": body });
     // No remote video yet
-    $('#stream').append('<video class="rounded centered" id="waitingvideo" />');
+    $('#stream').append('<video class="centered" id="waitingvideo" />');
 }
 
 function stopStream() {
@@ -170,7 +170,7 @@ function startJanus(callback) {
                             var addButtons = false;
                             if ($('#remotevideo').length === 0) {
                                 addButtons = true;
-                                $('#stream-object').html('<video class="rounded centered hide" id="remotevideo" autoplay playsinline/>');
+                                $('#stream-object').html('<video class="centered hide" id="remotevideo" autoplay playsinline/>');
 
                                 // Show the stream and hide the spinner when we get a playing event
                                 $("#remotevideo").bind("playing", function () {

@@ -50,7 +50,7 @@ def main(args):
         for u in users:
             if len(args) == 3 and args[1] == 'delete' and args[2] == u.username:
                 db.session.delete(u)
-                print WARNING + BOLD + '\n--- DELETED "' + u.username + '"\n' + ENDC
+                print(WARNING + BOLD + '\n--- DELETED "' + u.username + ENDC)
     elif args[1] == 'add':
         if len(args) == 5 and 'admin' in args[4]:
             u = User(username=args[2], admin=True)
@@ -58,10 +58,10 @@ def main(args):
             u = User(username=args[2])
         u.set_password(args[3])
         db.session.add(u)
-        print WARNING + BOLD + '\n+++ ADDED "' + sys.argv[2] + '"\n' + ENDC
+        print(WARNING + BOLD + '\n+++ ADDED "' + sys.argv[2] + ENDC)
     else:
-        print BOLD + FAIL + '\n!!!! Unrecognized argument(s) !!!!' + ENDC
-        print USAGE
+        print(BOLD + FAIL + '\n!!!! Unrecognized argument(s) !!!!' + ENDC)
+        print(USAGE)
         sys.exit()
 
     db.session.commit()

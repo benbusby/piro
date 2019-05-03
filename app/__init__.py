@@ -6,6 +6,7 @@ from flask_login import LoginManager
 
 import os
 
+print('LOL')
 app = Flask(__name__, static_folder=os.path.dirname(os.path.abspath(__file__)) + '/static')
 app.config.from_object(Config)
 
@@ -14,5 +15,4 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = '/login'
 
-from app import routes, models
-
+from app import models

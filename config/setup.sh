@@ -15,7 +15,7 @@ set -e
 
 declare -A reqs=([libsrtp2]=0 [libnice]=0)
 
-echo -e "${green}${bold}\nChecking for required libs...${normal}${nc}"
+echo -e "\nChecking for required libs..."
 
 for i in "${!reqs[@]}"
 do
@@ -33,9 +33,9 @@ echo -e "${green}${bold}\nInstalling pre-requisites...${normal}${nc}"
 sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev libogg-dev libcurl4-openssl-dev liblua5.2-dev libconfig-dev pkg-config gengetopt libtool automake gtk-doc-tools
 
 # RazTot/Flask requirements
-sudo apt-get -y install python-dev
+sudo apt-get -y install python3-dev
 sudo apt-get -y install pigpio
-sudo apt-get -y install virtualenv
+sudo apt-get -y install python3-venv
 
 # NGINX setup
 if [ ! -d "/etc/nginx/" ]; then 
@@ -48,7 +48,7 @@ else
 fi
 
 # Video streaming requirements
-sudo apt-get -y install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+sudo apt-get -y install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-pulseaudio
 
 # (Recommended) Install OpenSSL 1.1.1
 OPENSSL_VERSION=$(openssl version | cut -d ' ' -f 2 | tr -dc '0-9')
@@ -125,11 +125,9 @@ if [ ! -d "$SCRIPT_DIR/../venv" ]; then
     python3 -m venv $SCRIPT_DIR/../venv
 fi
 
-source $SCRIPT_DIR/../venv
-
 # Install all python requirements
 echo -e "${green}${bold}\nInstalling required python libraries...${normal}${nc}"
-pip install -r requirements.txt
+$SCRIPT_DIR/../venv/bin/pip3 install -r requirements.txt
 
 # Setting up user account
 echo -e "${green}${bold}\nCreating flask database...${normal}${nc}"
