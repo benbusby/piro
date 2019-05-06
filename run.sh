@@ -3,7 +3,13 @@
 export RANDOM_KEY=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo ''`
 NETWORK_IP=(`hostname -I`)
 
-if [[ $# -eq 0 ]] || [[ $1 == "remote" ]]; then
+if ! pgrep -x "pigpiod" > /dev/null
+then
+    echo "Starting pigpiod..."
+    sudo pigpiod
+fi
+
+if [[ $# -eq 0 ]] || [[ $1 == "remote" ]] || [[  $1 == "local" ]]; then
     # Optionally run janus (can be skipped if not testing streaming)
     while true; do
         read -p "Run Janus Gateway? (y/n) " yn
@@ -23,6 +29,8 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]]; then
     # Start flask server either on local network or public
     if [[ $# -eq 0 ]]; then
         export FLASK_HOST=${NETWORK_IP[0]}
+    elif [[ $1 == "local" ]]; then
+	export FLASK_HOST="127.0.0.1"
     elif [[ $1 == "remote" ]]; then
         export FLASK_HOST="0.0.0.0"
     else

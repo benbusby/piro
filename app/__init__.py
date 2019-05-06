@@ -6,7 +6,7 @@ from flask_login import LoginManager
 
 import os
 
-print('LOL')
+print('Initializing...')
 app = Flask(__name__, static_folder=os.path.dirname(os.path.abspath(__file__)) + '/static')
 app.config.from_object(Config)
 

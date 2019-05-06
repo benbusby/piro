@@ -145,7 +145,7 @@ while true; do
             read -p -s "Password: " password
             read -p -s "Confirm Password: " confirm_password
             if [ "$password" == "$confirm_password" ]; then
-                python3 $SCRIPT_DIR/../utils/mod_users.py 
+                python3 $SCRIPT_DIR/../utils/mod_users.py $username $password
                 break
             else
                 echo -e "${red}${bold}Passwords did not match!!!\n${normal}${nc}"
@@ -158,7 +158,27 @@ while true; do
     esac
 done
 
-
+while true; do
+    read -p "Create an account with Dataplicity? This will allow you to access the RazTot via a static https url without having to modify your home router settings. There are other services available, but this script will only walk you through setting up a Dataplicity account. (y/n) " yn
+    case $yn in
+        [Yy]* )
+            echo -e "\n${green}${bold}Setting up Dataplicity...${normal}${nc}"
+            echo -e "\nIn a browser, navigate to https://dataplicity.com and enter your email in the presented prompt."
+            read -p "Paste or type the resulting command here (double-check that it is correct): " dataplicity_command
+            $dataplicity_command
+            read -p "\n\nNavigate to https://dataplicity.com and verify that your device shows up in your list of devices. If so, click on your device and you should see a command line prompt with a navigation bar on the right. In the nav bar, there's a toggle for enabling Wormhole. Once you have that enabled, press enter to continue.\n\n(Press Enter)"
+            read -p "Paste the url displayed below the Wormhole toggle here: " dataplicity_url
+            while [[ $dataplicity_url != *"https://"* ]]; do
+                echo -e "${red}${bold}The url should contain https:// at the front. Please try again.${normal}${nc}"
+                read -p "Paste the url here: " dataplicity_url
+            done
+            echo $dataplicity_url >> $SCRIPT_DIR/../app/raztot_url
+            echo -e "\n${green}${bold}Dataplicity setup complete.${normal}${nc}"
+            ;;
+        [Nn]* )
+            echo ""
+            break
+            ;;
 
 echo -e "${green}${bold}\nCompleted RazTot setup.\n${normal}${nc}"
 

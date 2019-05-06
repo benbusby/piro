@@ -93,6 +93,17 @@ def add_header(response):
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
+
+    # Dataplicity specific fix for forcing https redirects through the nginx proxy
+    try:
+        with open(APP_ROOT + '/raztot_url', 'r') as f: https_url = f.read().strip(' \t\n\r')
+        print(https_url)
+        if 'Location' in response.headers:
+            response.headers['Location'] = https_url + response.headers['Location']
+    except FileNotFoundError:
+        print('xxxx')
+        pass
+
     return response
 
 ############################################################
@@ -228,7 +239,7 @@ def socket_disconnect():
 ############################################################
 def main():
     print('Running SocketIO app on ' + str(app.config['FLASK_HOST']) + '...')
-    socketio.run(app, host=app.config['FLASK_HOST'], port=8000)
+    socketio.run(app, host=app.config['FLASK_HOST'], port=8000, certfile=APP_ROOT + '/server.crt', keyfile=APP_ROOT + '/server.key')
 
 
 if __name__ == '__main__':

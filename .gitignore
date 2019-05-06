@@ -1,8 +1,12 @@
 .vscode/
 *.swp
-# User auth files
 migrations/
 *.db
+raztot_url
+*.crt
+*.key
+*.pem
+*.csr
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
