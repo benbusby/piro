@@ -33,9 +33,8 @@ echo -e "${green}${bold}\nInstalling pre-requisites...${normal}${nc}"
 sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev libogg-dev libcurl4-openssl-dev liblua5.2-dev libconfig-dev pkg-config gengetopt libtool automake gtk-doc-tools
 
 # RazTot/Flask requirements
-sudo apt-get -y install python3-dev
+sudo apt-get -y install python3-dev python3-venv
 sudo apt-get -y install pigpio
-sudo apt-get -y install python3-venv
 
 # NGINX setup
 if [ ! -d "/etc/nginx/" ]; then 
@@ -118,6 +117,18 @@ else
     echo -e "\n${green}${bold}Janus Gateway already installed.\n${normal}${nc}--- Streaming configurations are located in /opt/janus/etc/janus/"
 fi
 
+# Install rpicamsrc
+if ! gst-inspect-1.0 | grep -q "rpicamsrc"; then
+    git clone https://github.com/thaytan/gst-rpicamsrc.git
+    cd gst-rpicamsrc
+    ./autogen.sh --prefix=/usr --libdir=/usr/lib/arm-linux-gnueabihf/
+    make
+    sudo make install
+    cd ../
+    rm -rf gst-rpicamsrc/
+else
+    echo -e "\n${green}${bold}Already have rpicamsrc!${normal}${nc}"
+fi
 
 # Set up virtual environment
 if [ ! -d "$SCRIPT_DIR/../venv" ]; then
@@ -129,16 +140,18 @@ fi
 echo -e "${green}${bold}\nInstalling required python libraries...${normal}${nc}"
 $SCRIPT_DIR/../venv/bin/pip3 install -r requirements.txt
 
-# Setting up user account
-echo -e "${green}${bold}\nCreating flask database...${normal}${nc}"
-cd $SCRIPT_DIR/..
-flask db init
-flask db migrate -m "users table"
-flask db upgrade
-cd $SCRIPT_DIR
+# Setting up user account / database
+if [ ! -d "$SCRIPT_DIR/../migrations" ]; then
+    echo -e "${green}${bold}\nCreating flask database...${normal}${nc}"
+    cd $SCRIPT_DIR/..
+    flask db init
+    flask db migrate -m "users table"
+    flask db upgrade
+    cd $SCRIPT_DIR
+fi
 
 while true; do
-    read -p "Create your user account now? This can be done later via utils/mod_users.py, but at least one account is required for the RazTot to be functional. (y/n) " yn
+    read -p "Create a user account now? This can be done later via utils/mod_users.py, but at least one account is required for the RazTot to be functional. (y/n) " yn
     case $yn in
         [Yy]* )
             read -p "Username: " username
