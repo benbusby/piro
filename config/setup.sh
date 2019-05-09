@@ -119,6 +119,7 @@ fi
 
 # Install rpicamsrc
 if ! gst-inspect-1.0 | grep -q "rpicamsrc"; then
+    sudo apt-get -y install autoconf automake libtool pkg-config libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libraspberrypi-dev
     git clone https://github.com/thaytan/gst-rpicamsrc.git
     cd gst-rpicamsrc
     ./autogen.sh --prefix=/usr --libdir=/usr/lib/arm-linux-gnueabihf/
