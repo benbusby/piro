@@ -150,7 +150,9 @@ if [ ! -d "$SCRIPT_DIR/../migrations" ]; then
     cd $SCRIPT_DIR
 fi
 
+# User account setup
 while true; do
+    $SCRIPT_DIR/../venv/bin/python3 $SCRIPT_DIR/../utils/mod_users.py list
     read -p "Create a user account now? This can be done later via utils/mod_users.py, but at least one account is required for the RazTot to be functional. (y/n) " yn
     case $yn in
         [Yy]* )
@@ -158,7 +160,7 @@ while true; do
             read -p -s "Password: " password
             read -p -s "Confirm Password: " confirm_password
             if [ "$password" == "$confirm_password" ]; then
-                python3 $SCRIPT_DIR/../utils/mod_users.py $username $password
+                $SCRIPT_DIR/../venv/bin/python3 $SCRIPT_DIR/../utils/mod_users.py $username $password
                 break
             else
                 echo -e "${red}${bold}Passwords did not match!!!\n${normal}${nc}"
@@ -171,6 +173,7 @@ while true; do
     esac
 done
 
+# Dataplicity setup (optional, but recommended for ease of use)
 while true; do
     read -p "Create an account with Dataplicity? This will allow you to access the RazTot via a static https url without having to modify your home router settings. There are other services available, but this script will only walk you through setting up a Dataplicity account. (y/n) " yn
     case $yn in
@@ -187,11 +190,14 @@ while true; do
             done
             echo $dataplicity_url >> $SCRIPT_DIR/../app/raztot_url
             echo -e "\n${green}${bold}Dataplicity setup complete.${normal}${nc}"
+            break
             ;;
         [Nn]* )
             echo ""
             break
             ;;
+    esac
+done
 
 echo -e "${green}${bold}\nCompleted RazTot setup.\n${normal}${nc}"
 
