@@ -9,8 +9,9 @@ from os import listdir
 import os
 import psutil
 from utils.custom_autodoc import CustomAutodoc as Autodoc
-from flask import Flask, render_template, after_this_request, json, request, flash, redirect, Response, make_response, send_file, session
+from flask import Flask, render_template, send_from_directory, after_this_request, json, request, flash, redirect, Response, make_response, send_file, session
 from functools import wraps
+import signal
 import sys
 from os.path import isfile, join
 import os.path
@@ -33,7 +34,7 @@ monkey.patch_all()
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_FOLDER = os.path.join(APP_ROOT, 'static')
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'captures')
+CAPTURES_FOLDER = os.path.join(APP_ROOT, 'static', 'captures')
 
 #-----[ APP CONFIGURATION AND ROUTING ]-----#
 auto = Autodoc(app)
@@ -66,7 +67,7 @@ def get_status():
     total = int(disk_status.total / (1024.0 ** 3))
     used = int(disk_status.used / (1024.0 ** 3))
     percent = disk_status.percent
-    image_count = len(os.listdir(UPLOAD_FOLDER))
+    image_count = len(os.listdir(CAPTURES_FOLDER))
 
     data = {}
     data['total'] = total
@@ -80,9 +81,11 @@ def get_status():
     return json.dumps(data)
 
 
-def is_running():
+def is_running(capture):
     for pid in psutil.process_iter():
-        if "gst-launch-1.0" in pid.name():
+        if not capture and "gst-launch-1.0" in pid.name():
+            return True
+        elif capture and "capture.sh" in pid.name():
             return True
     return False
 
@@ -97,11 +100,9 @@ def add_header(response):
     # Dataplicity specific fix for forcing https redirects through the nginx proxy
     try:
         with open(APP_ROOT + '/raztot_url', 'r') as f: https_url = f.read().strip(' \t\n\r')
-        print(https_url)
         if 'Location' in response.headers:
-            response.headers['Location'] = https_url + response.headers['Location']
+            response.headers['Location'] = https_url + response.headers['Location'].replace('https://127.0.0.1:8000', '')
     except FileNotFoundError:
-        print('xxxx')
         pass
 
     return response
@@ -150,7 +151,7 @@ def camera():
     Starts (POST) or stops (DELETE) stream, or fetches (GET) the janus streaming api key
     '''
     if request.method == 'POST':
-        if not is_running() and app.config['FLASK_HOST'] != 'localhost':
+        if not is_running(False):
             print('Starting stream...')
             stream_proc = "/home/pi/raztot/utils/stream.sh"
             subprocess.Popen(stream_proc.split())
@@ -166,8 +167,35 @@ def camera():
         return Response('{"janus_key":"' + os.environ.get('RANDOM_KEY') + '"}', status=200, mimetype='application/json')
 
     else:
-        # TODO: Capture images
-        return Response('{"response":"Not set up"}', status=200, mimetype='application/json')
+        json_request = json.loads(request.data)
+        if not json_request.get('record'):
+            for pid in psutil.process_iter():
+                if 'capture' in pid.name():
+                    print("KILLING")
+                    os.killpg(os.getpgid(pid.pid), signal.SIGINT)
+            return Response('{"response":"Successfully stopped capture"}', status=200, mimetype='application/json')
+        elif json_request.get('record'):
+            capture_command = "/home/pi/raztot/utils/capture.sh"
+            subprocess.Popen(capture_command.split(), preexec_fn=os.setsid)
+            os.setpgrp()
+            return Response('{"response":"Started capture"}', status=200, mimetype='application/json')
+        else:
+            return Response('{"response":"Unrecognized command"}', status=400, mimetype='application/json')
+
+
+@app.route('/drive', methods=['DELETE'])
+@auto.doc()
+def drive():
+    '''
+    Clears the RazTot's image directory in its entirety.
+    '''
+    all_files = [f for f in listdir(
+        CAPTURES_FOLDER) if isfile(join(CAPTURES_FOLDER, f))]
+
+    for i in range(len(all_files)):
+        os.remove(CAPTURES_FOLDER + '/' + all_files[i])
+
+    return Response('{"response":"Success"}', status=200, mimetype='application/json')
 
 
 @app.route('/documentation')
@@ -178,6 +206,21 @@ def documentation():
     '''
     return auto.html(template='autodoc.html')
 
+
+@app.route('/static/captures/<target>')
+@login_required
+def static_file(target):
+    if not current_user.is_authenticated:
+        return Response('{"Error":"Unauthorized"}', status=403, mimetype='application/json')
+
+    return send_from_directory(CAPTURES_FOLDER + '/', target)
+
+@app.route('/static/captures/')
+@login_required
+def list_captures():
+    # Show directory contents
+    files = os.listdir(CAPTURES_FOLDER)
+    return render_template('files.html', files=files)
 
 ############################################################
 # SOCKETIO

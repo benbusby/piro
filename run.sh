@@ -15,6 +15,8 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]] || [[  $1 == "local" ]]; then
         read -p "Run Janus Gateway? (y/n) " yn
         case $yn in
             [Yy]* )
+                sudo pkill janus
+                sleep 0.5
                 echo "Using api key: $RANDOM_KEY"
                 sudo /opt/janus/bin/janus -a $RANDOM_KEY &
                 break

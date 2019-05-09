@@ -1,23 +1,25 @@
 <head>
     <link rel="stylesheet" href="../static/css/stream.css">
 
-    <script type="text/javascript" src="../static/js/tools/adapter.min.js"></script>
-    <script type="text/javascript" src="../static/js/tools/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.4.0/adapter.min.js"></script>
+    <!--<script type="text/javascript" src="../static/js/tools/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous">
+    </script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
-    <script type="text/javascript" src="../static/js/tools/bootbox.min.js"></script>
 
     <script type="text/javascript" src="../static/js/janus.js"></script>
     <script type="text/javascript" src="../static/js/janus-gateway.js"></script>
     <script type="text/javascript" src="../static/js/controller.js"></script>
     <script type="text/javascript" src="../static/js/socket-data.js"></script>
 
-    <link rel="stylesheet" href="../static/css/themes/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/fonts/roboto-mono.css">
     <link rel="stylesheet" href="../static/css/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
     <link rel="stylesheet" href="../static/css/themes/bootstrap-theme.min.css">
-    <script src="../static/js/tools/bootstrap.min.js"></script>
     <title>RazTot</title>
 </head>
 
@@ -25,17 +27,20 @@
     <a class="" href="" onclick="return false;" id="start-stream" type="button">Start Stream</a>
     <object id="stream-object">
     </object>
-    <div class="button">
-        <div id="recording-button" class="inner"></div>
+    <div class="button primary">
+        <div id="image-button" class="inner-disabled"><i class="fas fa-camera"></i></div>
+    </div>
+    <div class="button secondary">
+        <div id="recording-button" class="inner-disabled"></div>
     </div>
     <div class="options-div">
         <div class="options-btn" onclick="this.classList.toggle('active')"><i class="fa fa-cog"></i>
         </div>
         <div class="options">
-            <a class="options-item" href="/static/uploads/" type="button">View Recordings</a>
-            <a class="options-item" href="" onclick="return false;" id="capture" type="button">Take Picture</a>
+            <a class="options-item" href="/static/captures/" target=”_blank” rel=”noopener noreferrer” type="button">View Recordings</a>
             <a class="options-item warning" href="" onclick="return false;" id="clear-drive"
-                type="button">Clear Drive</a>
+                type="button">Clear Recordings</a>
+            <a class="options-item" href="/logout">Log Out</a>
         </div>
     </div>
     <p id="indicator"></p>

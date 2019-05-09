@@ -344,7 +344,7 @@ Janus.init = function (options) {
 // Helper method to check whether WebRTC is supported by this browser
 Janus.isWebrtcSupported = function () {
 	return window.RTCPeerConnection !== undefined && window.RTCPeerConnection !== null &&
-		navigator.getUserMedia !== undefined && navigator.getUserMedia !== null;
+		navigator.mediaDevices.getUserMedia !== undefined && navigator.mediaDevices.getUserMedia !== null;
 };
 
 // Helper method to create random identifiers (e.g., transaction)

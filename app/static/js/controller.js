@@ -7,6 +7,9 @@ var isStreaming = false;
 var isDownloading = false;
 var isFullscreen = false;
 
+var recorder;
+var data = [];
+
 $(document).ready(function () {
 
     // Get current version number
@@ -37,7 +40,7 @@ $(document).ready(function () {
 
         // Uses vcgencmd get_camera to see if the camera is properly connected
         if ($("#start-stream").hasClass("disabled")) {
-            bootbox.alert("Cannot start stream without a connected camera. Please connect the camera and try again.");
+            alert("Cannot start stream without a connected camera. Please connect the camera and try again.");
             return;
         }
 
@@ -50,9 +53,12 @@ $(document).ready(function () {
             $("#stream-status").html("Off");
             $("#stream-status").removeClass("option-on");
 
-            // Disable capture button
+            // Disable capture buttons
             $("#recording-button").addClass("inner-disabled");
-            $("#recording-button").removeClass("inner");
+            $("#recording-button").removeClass("recording-inner");
+
+            $("#image-button").addClass("inner-disabled");
+            $("#image-button").removeClass("image-inner");
 
             // Send DELETE to the camera api to disable the stream
             sendCameraSetting('DELETE', new function () {
@@ -68,10 +74,15 @@ $(document).ready(function () {
             return;
         }
 
-        // If the capture button has been disabled, re-enable it
+        // If the capture buttons have been disabled, re-enable them
         if ($("#recording-button").hasClass("inner-disabled")) {
             $("#recording-button").removeClass("inner-disabled");
-            $("#recording-button").addClass("inner");
+            $("#recording-button").addClass("recording-inner");
+        }
+
+        if ($("#image-button").hasClass("inner-disabled")) {
+            $("#image-button").removeClass("inner-disabled");
+            $("#image-button").addClass("image-inner");
         }
 
         $("#stream-status").html("Live");
@@ -79,7 +90,6 @@ $(document).ready(function () {
 
         isStreaming = true;
         $("#start-stream").html('Stop Stream');
-        $(".button").css('display', 'inherit');
         $(".options-div").css('display', 'inherit');
 
         sendCameraSetting('POST', new function () {
@@ -87,75 +97,30 @@ $(document).ready(function () {
         });
     }
 
-    // Pauses live stream and begins download for all recently captured videos
-    function startDownload() {
-        if (isDownloading) {
+    // Snaps a picture and saves the result locally
+    function toggleImage() {
+        if (!isStreaming) {
+            //alert("Must be streaming to take picture.");
             return;
         }
 
-        $("#download-data").html("Downloading, please wait...");
-        $("#download-data").addClass("option-disabled");
-        isDownloading = true;
+        $(".primary").toggleClass("active");
+        captureImage();
 
-        sendCameraSetting({
-            message_type: DWNLD_SET,
-            dwnld_flag: true
-        }, function () {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/download', true);
-            xhr.responseType = "blob";
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.response.type !== 'application/json') {
-                        var blob = xhr.response;
-                        $('body').append('<a id="download-zip">&nbsp;</a>');
-                        var anchor = $("#download-zip");
-
-                        var filename = "download.zip";
-                        var disposition = xhr.getResponseHeader('Content-Disposition');
-                        if (disposition && disposition.indexOf('attachment') !== -1) {
-                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                            var matches = filenameRegex.exec(disposition);
-                            if (matches != null && matches[1]) {
-                                filename = matches[1].replace(/['"]/g, '');
-                            }
-                        }
-
-                        anchor.attr({
-                            href: window.URL.createObjectURL(blob),
-                            target: '_blank',
-                            download: filename
-                        })[0].click();
-                    } else {
-                        console.error(xhr.response.type);
-                    }
-
-                    $("#download-data").html("Download Data");
-                    $("#download-data").removeClass("option-disabled");
-                    isDownloading = false;
-                    sendCameraSetting({
-                        message_type: DWNLD_SET,
-                        dwnld_flag: false
-                    });
-                }
-            };
-
-            xhr.onerror = function () {
-                bootbox.alert("Unable to download zip file.");
-            }
-            xhr.send();
-        });
+        setTimeout(function () {
+            $(".primary").toggleClass("active");
+        }, 250);
     }
 
     // Starts/stops capture -- starting capture acquires images from the stream at ~1hz
     function toggleRecord() {
         if (!isStreaming) {
-            bootbox.alert("Must be streaming to begin recording.");
+            //alert("Must be streaming to begin recording.");
             return;
         }
 
-        $(".button").toggleClass("active");
-
+        $(".secondary").toggleClass("active");
+        
         if (!isRecording) {
             sendCameraSetting('PUT', new function () {
                 isRecording = true;
@@ -179,16 +144,11 @@ $(document).ready(function () {
     }
 
     var captureImage = function() {
-        if (!isStreaming) {
-            bootbox.alert("Must be streaming to take picture.");
-            return;
-        }
-
         // Create canvas element to capture frame of video
-        var video = $("#remotevideo");
+        var video = $("#remotevideo")[0];
         var canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth * scale;
-        canvas.height = video.videoHeight * scale;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         canvas.getContext('2d')
               .drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -219,7 +179,7 @@ $(document).ready(function () {
             },
             error: function () {
                 typeof callback === 'function' && callback(data);
-                bootbox.alert("There was an error sending the provided camera settings. Please check your network connection and the provided values, and try again.");
+                alert("There was an error sending the provided camera settings. Please check your network connection and the provided values, and try again.");
             }
         });
     }
@@ -241,7 +201,8 @@ $(document).ready(function () {
             $("#footer").removeClass("hidden-element");
             $("#indicator").removeClass("hidden-element");
             $(".options-div").removeClass("hidden-element");
-            $(".button").removeClass("hidden-element");
+            $(".primary").removeClass("hidden-element");
+            $(".secondary").removeClass("hidden-element");
 
             $("#stream-object").height(540);
             $("#stream-object").width(960);
@@ -257,7 +218,8 @@ $(document).ready(function () {
             $("#footer").addClass("hidden-element");
             $("#indicator").addClass("hidden-element");
             $(".options-div").addClass("hidden-element");
-            $(".button").addClass("hidden-element");
+            $(".primary").addClass("hidden-element");
+            $(".secondary").addClass("hidden-element");
 
             $("#stream-object").css('width', '100%');
             $("#stream-object").css('height', '100%');
@@ -271,8 +233,9 @@ $(document).ready(function () {
     });
 
     $("#start-stream").on('click', janusSetup);
-    $(".button").on('click', toggleRecord);
-    $("#download-data").on('click', startDownload);
+
+    $(".primary").on('click', toggleImage);
+    $(".secondary").on('click', toggleRecord);
 
     $(window).bind('beforeunload', function () {
         $('#param-embed').remove();
@@ -290,7 +253,7 @@ $(document).ready(function () {
     });
 
     $("#clear-drive").on("click", function () {
-        if (confirm("Are you sure you want to proceed with clearing the drive?")) {
+        if (confirm("Are you sure you want to proceed with clearing the recordings folder?")) {
             $.ajax({
                 type: 'DELETE',
                 url: '/drive',
@@ -298,10 +261,10 @@ $(document).ready(function () {
                 cache: false,
                 processData: false,
                 success: function () {
-                    bootbox.alert("Drive cleared!");
+                    alert("Recordings deleted!");
                 },
                 error: function () {
-                    bootbox.alert("Failed to clear drive.");
+                    alert("Failed to clear out recordings.");
                 }
             });
         }
