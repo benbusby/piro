@@ -89,7 +89,7 @@ general: {
 
 raztot-streaming: {
 	type = "rtp"
-	id = 0
+	id = 222
 	description = "RazTot streaming of RTSP feed from onboard camera (using raspivid)"
 	audio = false
 	video = true
@@ -97,41 +97,6 @@ raztot-streaming: {
 	videopt = 126
 	videortpmap = "H264/90000"
 	videofmtp = "profile-level-id=42e01f;packetization-mode=1"
-}
-
-gstreamer-sample: {
-	type = "rtp"
-	id = 1
-	description = "Opus/VP8 live stream coming from gstreamer"
-	audio = true
-	video = true
-	audioport = 5002
-	audiopt = 111
-	audiortpmap = "opus/48000/2"
-	videoport = 5004
-	videopt = 100
-	videortpmap = "VP8/90000"
-	secret = "adminpwd"
-}
-
-file-live-sample: {
-	type = "live"
-	id = 2
-	description = "a-law file source (radio broadcast)"
-	filename = "/opt/janus/share/janus/streams/radio.alaw"
-	audio = true
-	video = false
-	secret = "adminpwd"
-}
-
-file-ondemand-sample: {
-	type = "ondemand"
-	id = 3
-	description = "mu-law file source (music)"
-	filename = "/opt/janus/share/janus/streams/music.mulaw"
-	audio = true
-	video = false
-	secret = "adminpwd"
 }
 
 #
