@@ -30,7 +30,9 @@
 }
 
 body {
-    background-color: #641E16 !important;
+    /*background-color: #641E16 !important;*/
+    background-image: url('/static/img/background.png');
+    background-size: 50px;
     overflow: hidden;
 }
 
