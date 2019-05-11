@@ -11,3 +11,4 @@ flask_wtf
 flask-login
 flask-migrate
 flask-sqlalchemy
+pyopenssl

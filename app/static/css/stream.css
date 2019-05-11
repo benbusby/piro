@@ -4,6 +4,7 @@
     outline: 5px dashed black;
     width: 960px;
     height: 540px;
+    background: #641E16;
 }
 
 #remotevideo {
@@ -31,8 +32,8 @@
 
 body {
     /*background-color: #641E16 !important;*/
-    background-image: url('/static/img/background.png');
-    background-size: 50px;
+    background-image: url('../img/background.png');
+    background-size: 75px;
     overflow: hidden;
 }
 

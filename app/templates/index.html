@@ -1,25 +1,23 @@
 <head>
-    <link rel="stylesheet" href="../static/css/stream.css">
+    <link rel="stylesheet" href="/static/css/stream.css">
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.4.0/adapter.min.js"></script>
-    <!--<script type="text/javascript" src="../static/js/tools/jquery.min.js"></script>-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.4.0/adapter.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous">
-    </script>
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous">
+        </script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
 
-    <script type="text/javascript" src="../static/js/janus.js"></script>
-    <script type="text/javascript" src="../static/js/janus-gateway.js"></script>
-    <script type="text/javascript" src="../static/js/controller.js"></script>
-    <script type="text/javascript" src="../static/js/socket-data.js"></script>
+    <script type="text/javascript" src="/static/js/janus.js"></script>
+    <script type="text/javascript" src="/static/js/janus-gateway.js"></script>
+    <script type="text/javascript" src="/static/js/controller.js"></script>
+    <script type="text/javascript" src="/static/js/socket-data.js"></script>
 
-    <link rel="stylesheet" href="../static/css/fonts/roboto-mono.css">
-    <link rel="stylesheet" href="../static/css/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="../static/css/themes/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/css/fonts/roboto-mono.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
+        crossorigin="anonymous">
     <title>RazTot</title>
 </head>
 
@@ -37,7 +35,8 @@
         <div class="options-btn" onclick="this.classList.toggle('active')"><i class="fa fa-cog"></i>
         </div>
         <div class="options">
-            <a class="options-item" href="/static/captures/" target=”_blank” rel=”noopener noreferrer” type="button">View Recordings</a>
+            <a class="options-item" href="/static/captures/" target=”_blank” rel=”noopener
+                noreferrer” type="button">View Recordings</a>
             <a class="options-item warning" href="" onclick="return false;" id="clear-drive"
                 type="button">Clear Recordings</a>
             <a class="options-item" href="/logout">Log Out</a>
@@ -46,7 +45,7 @@
     <p id="indicator"></p>
 
     <div style="width: 50%" id="footer">
-        <img style="width: 40%" src="../static/img/raztot.svg">
+        <img style="width: 25%" src="/static/img/raztot_logo.png">
     </div>
     <div id="right-footer">
         <p class="display-info"> Camera Status:

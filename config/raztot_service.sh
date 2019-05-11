@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo /home/pi/raztot/run.sh service
+source /home/pi/raztot/run.sh local

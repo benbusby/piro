@@ -32,7 +32,7 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]] || [[  $1 == "local" ]]; then
     if [[ $# -eq 0 ]]; then
         export FLASK_HOST=${NETWORK_IP[0]}
     elif [[ $1 == "local" ]]; then
-	export FLASK_HOST="127.0.0.1"
+	    export FLASK_HOST="127.0.0.1"
     elif [[ $1 == "remote" ]]; then
         export FLASK_HOST="0.0.0.0"
     else
