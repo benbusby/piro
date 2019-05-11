@@ -18,7 +18,7 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]] || [[  $1 == "local" ]]; then
                 sudo pkill janus
                 sleep 0.5
                 echo "Using api key: $RANDOM_KEY"
-                sudo /opt/janus/bin/janus -a $RANDOM_KEY &
+                sudo /opt/janus/bin/janus -a $RANDOM_KEY &#-d 7 -f &
                 break
                 ;;
             [Nn]* )

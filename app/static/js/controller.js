@@ -165,7 +165,7 @@ $(document).ready(function () {
     };
 
     // Updates camera to start, stop, or record a stream
-    function sendCameraSetting(method, callback, data) {
+    function sendCameraSetting(method, callback, data, skipAlert) {
         $.ajax({
             type: method,
             url: '/camera',
@@ -174,12 +174,14 @@ $(document).ready(function () {
             dataType: "json",
             data: JSON.stringify(data),
             processData: false,
-            success: function (data) {
-                typeof callback === 'function' && callback(data);
+            success: function (responseData) {
+                typeof callback === 'function' && callback(responseData);
             },
             error: function () {
-                typeof callback === 'function' && callback(data);
-                alert("There was an error sending the provided camera settings. Please check your network connection and the provided values, and try again.");
+                typeof callback === 'function' && callback();
+                if (!skipAlert) {                
+                    alert("There was an error sending the provided camera settings. Please check your network connection and the provided values, and try again.");
+                }
             }
         });
     }
@@ -241,7 +243,7 @@ $(document).ready(function () {
         $('#param-embed').remove();
         $('#stream-embed').remove();
 
-        sendCameraSetting('DELETE');
+        sendCameraSetting('DELETE', null, null, true);
     });
 
     $(".options-btn").on("click", function () {
