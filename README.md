@@ -1,3 +1,4 @@
+![Kiku](app/static/img/raztot_logo.png)
 # RazTot
 #### A Raspberry Pi + WebRTC Streaming Rover, controlled with Flask-SocketIO
 [![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)

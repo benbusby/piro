@@ -44,12 +44,14 @@ $(document).ready(function () {
             return;
         }
 
+        $("#start-stream").html('Launching...');
         startJanus(toggleStream);
     }
 
     // Begins the stream if not running, otherwise kills the stream
     function toggleStream() {
         if (isStreaming) {
+            $("#start-stream").html('Stopping...');
             $("#stream-status").html("Off");
             $("#stream-status").removeClass("option-on");
 
@@ -89,10 +91,10 @@ $(document).ready(function () {
         $("#stream-status").addClass("option-on");
 
         isStreaming = true;
-        $("#start-stream").html('Stop Stream');
-        $(".options-div").css('display', 'inherit');
+        $(".options-div").css("display", "inherit");
 
         sendCameraSetting('POST', new function () {
+            $("#start-stream").html("Stop Stream");
             console.log("Successfully started stream");
         });
     }
