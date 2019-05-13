@@ -82,7 +82,13 @@ Once the script is done, a system service will be set up to start the Flask app,
 - Image capture is done via the grey button with the camera icon just below the streaming window.
 - Recording snippets of the stream can be accomplished using the red recording button below the stream once the stream is running. 
 - You can view a list of prior recordings, clear all recordings, and log out using the gear icon below the stream.
-- Motion is achieved using the arrow keys on your keyboard, or by pressing the arrow key buttons on the web page. Each key will send a command to the RazTot to move wheels accordingly for whichever direction you are trying to navigate.  
+- Motion is achieved using the arrow keys on your keyboard, or by pressing the arrow key buttons on the web page. Each key will send a command to the RazTot to move wheels accordingly for whichever direction you are trying to navigate.
+
+## Images
+![RazTot First Build](app/static/img/first_build.jpg)
+![RazTot Web App](app/static/img/web_app.png)
+
+For more images, see [the Imgur album](https://imgur.com/a/DZqkBm9).
 
 ## Credits
 - RazTot logo by [Ren Chu](https://artbyren.com) ([Instagram](https://instagram.com/art.by.ren))
