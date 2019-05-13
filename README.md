@@ -73,9 +73,14 @@ cd raztot/config
 ```
 The setup script will determine what needs to be installed and walk you through each step of the process. It can take quite a while depending on your network speed, but is a mostly hands off process so you don't need to watch it the whole time.
 
-At the end of the script you'll be prompted to create an account with [dataplicity](https://dataplicity.com/), since they provide the ability to host a website on the RazTot without having to mess around with your router at home. It also provides an https url to access the RazTot with, the domain doesn't change between bootups. I've been pretty satisfied with using dataplicity so far, since the service is free (at least for one device) and comes with a domain you can use rather than buying one yourself. If you'd rather just modify your router settings instead, however, here are some links to do so: (add links here)
+At the end of the script you'll be prompted to create an account with [dataplicity](https://dataplicity.com/), since they provide the ability to host a website on the RazTot without having to mess around with your router at home. It also provides an https url to access the RazTot with, the domain doesn't change between bootups. I've been pretty satisfied with using dataplicity so far, since the service is free (at least for one device) and comes with a domain you can use rather than buying one yourself. If you'd rather just modify your router settings instead, however, there are plenty of guides online.
 
-Once the script is done, a system service will be set up to start the Flask app, Janus server, and pigpio daemon whenever the Pi is powered on. If you set up an account with remote.it, you can log into their web portal to view the domain that was assigned to your Pi. Navigating to that domain should bring you to the main app, where you can start using the RazTot.
+Once the script is done, you can run the command
+```bash
+cd ~/raztot
+source run.sh local
+```
+anytime the Pi is powered on to start the Flask app, Janus server, and pigpio daemon whenever the Pi is powered on. If you set up an account with dataplicity, you can log into their web portal to view the domain that was assigned to your Pi. Navigating to that domain should bring you to the main app, where you can start using the RazTot.
 
 ### Controls
 - Streaming is controlled via the web app using the Start/Stop Stream button at the top of the web page. 
