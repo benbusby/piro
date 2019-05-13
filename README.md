@@ -5,7 +5,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/helloben)
 
 ## About
-The RazTot is an easy DIY project which allows you to have full control over a roving security camera at your house. The idea for the RazTot was inspired by wanting to have a camera that I could use to follow my dog around the house whenever I'm not home, but I didn't trust any third party solutions to be A) truly secure, and B) priced fairly.
+The RazTot is an easy DIY project which allows you to have full control over a roving security camera at your house. The idea for the RazTot was inspired by wanting to have a camera that I could use to follow my dog around the house whenever I'm not home, but I wanted more control over the design. I also didn't like the idea of using any of the available third party closed source solutions, since I would be using this to stream video of my house when I'm not around. 
 
 *For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
@@ -32,7 +32,7 @@ The RazTot is an easy DIY project which allows you to have full control over a r
 | 2 x servos (with wheels) | These are used to control movement of the RazTot. | [$15](https://www.amazon.com/Feetech-Degree-Continuous-Rotation-Arduino/dp/B079MF1BZS/) |
 | 1 x portable power block | Required in order to move around without needing to be plugged into a wall all the time. I use [this one](https://www.amazon.com/gp/product/B0742NFNN9/) since it comes with a fold out AC wall plug, which (in my opinion) is more convenient to charge when it dies, and the 12000mAh version lasts me quite a while. | Price varies ([mine was $24](https://www.amazon.com/gp/product/B0742NFNN9/)) |
 | (Optional, but recommended) 1 x mounting surface | Can be 3D printed, or just using materials at your disposal (I used an iPhone box I had lying around). This provides a way to mount the wheels on something without doing any mods to your battery pack. I guarantee one of the boxes that the parts are shipped to you in will work for this. | Varies, can be free |
-| (Optional) 1 x 1" caster wheel | This can be used towards the front of the mounting surface to help guide the RazTot. Although you only need one, they generally come in a set. You can most likely use something like a tennis ball cut in half to mount in the front instead. | Varies ([mine were $10], but can be found for cheaper.(https://www.amazon.com/SungMi-Plastic-Capacity-Included-SM-AMS-210001/dp/B07DS6SF14/)) | 
+| (Optional) 1 x 1" caster wheel | This can be used towards the front of the mounting surface to help guide the RazTot. Although you only need one, they generally come in a set. You can most likely use something like a tennis ball cut in half to mount in the front instead. | Varies ([mine were $10](https://www.amazon.com/SungMi-Plastic-Capacity-Included-SM-AMS-210001/dp/B07DS6SF14/), but can be found for cheaper.) | 
 
 **Total:** ~$80-120, depending on parts
 
