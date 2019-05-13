@@ -64,7 +64,7 @@ body {
     animation-duration: 1s;
 }
 
-.secondary {
+.primary, .secondary {
     margin-top: 15px;
 }
 
@@ -117,6 +117,14 @@ body {
     line-height: 94px !important;
     color: white;
     font-size: 2em;
+}
+
+.primary {
+    float: left;
+}
+
+.secondary {
+    float: right;
 }
 
 .primary.active .image-inner {
@@ -425,7 +433,15 @@ body {
     display: none !important;
 }
 
-@media (max-height: 720px) {
+.media-buttons {
+    width: 50%;
+    display: block;
+    margin: auto;
+    height: fit-content;
+    max-width: 850px;
+}
+
+@media (max-height: 1280px) {
     #stream-object {
         width: 720px;
         height: 405px;

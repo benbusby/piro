@@ -23,12 +23,12 @@ $(document).ready(function () {
     }
 
     sendCameraSetting('GET', function (data) {
-	if (data.janus_key) {
-        janusKey = data.janus_key;
-	} else {
-        alert('Janus api key was unable to be found. Video streaming will not work.');
-	}
-	console.log(data.janus_key);
+        if (data.janus_key) {
+            janusKey = data.janus_key;
+        } else {
+            alert('Janus api key was unable to be found. Video streaming will not work.');
+        }
+        console.log(data.janus_key);
     });
 
     // Starts janus session if camera is connected and not already streaming
@@ -122,11 +122,11 @@ $(document).ready(function () {
         }
 
         $(".secondary").toggleClass("active");
-        
+
         if (!isRecording) {
             sendCameraSetting('PUT', new function () {
                 isRecording = true;
-                $("#indicator").html("Capturing");
+                $("#indicator").html("Recording");
                 $("#indicator").addClass("element-fade");
 
                 $("#acquisition-status").html("On");
@@ -145,14 +145,14 @@ $(document).ready(function () {
         }
     }
 
-    var captureImage = function() {
+    var captureImage = function () {
         // Create canvas element to capture frame of video
         var video = $("#remotevideo")[0];
         var canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d')
-              .drawImage(video, 0, 0, canvas.width, canvas.height);
+            .drawImage(video, 0, 0, canvas.width, canvas.height);
 
         var dataURL = canvas.toDataURL("image/jpeg", 1.0);
         var filename = new Date().toISOString();
@@ -181,7 +181,7 @@ $(document).ready(function () {
             },
             error: function () {
                 typeof callback === 'function' && callback();
-                if (!skipAlert) {                
+                if (!skipAlert) {
                     alert("There was an error sending the provided camera settings. Please check your network connection and the provided values, and try again.");
                 }
             }

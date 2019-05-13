@@ -1,13 +1,13 @@
-![Kiku](app/static/img/raztot_logo.png)
+![RazTot](app/static/img/raztot_logo_small.png)
 # RazTot
 #### A Raspberry Pi + WebRTC Streaming Rover, controlled with Flask-SocketIO
 [![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/helloben)
 
 ## About
-The RazTot is an easy DIY project which allows you to have full control over a roving security camera at your house. The idea for the RazTot was inspired by wanting to have a camera that I could use to follow my dog around the house while I'm at work, but I didn't trust any third party solutions to be A) truly secure, and B) priced fairly. I actually saw some sites selling very similar designs for outrageous amounts of money (>$300).
+The RazTot is an easy DIY project which allows you to have full control over a roving security camera at your house. The idea for the RazTot was inspired by wanting to have a camera that I could use to follow my dog around the house whenever I'm not home, but I didn't trust any third party solutions to be A) truly secure, and B) priced fairly.
 
-*For more information on the design, and a more detailed build guide, you can visit [the official site for the project here](https://benbusby.github.io/raztot).*
+*For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
 ## Browser Support (Latest Versions)
 

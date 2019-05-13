@@ -1,5 +1,7 @@
 body {
-    background-color: #641E16 !important;
+    background-image: url('../img/background.png');
+    background-size: 75px;
+    color: white;
 }
 
 label {
