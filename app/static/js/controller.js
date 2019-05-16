@@ -10,6 +10,9 @@ var isFullscreen = false;
 var recorder;
 var data = [];
 
+var initialWidth;
+var initialHeight;
+
 $(document).ready(function () {
 
     // Get current version number
@@ -156,7 +159,7 @@ $(document).ready(function () {
 
         var dataURL = canvas.toDataURL("image/jpeg", 1.0);
         var filename = new Date().toISOString();
-        filename = filename.substring(0, filename.indexOf('.'));
+        filename = filename.substring(0, filename.indexOf('.')) + '.jpg';
 
         // Save image with dummy anchor
         var a = document.createElement('a');
@@ -199,6 +202,11 @@ $(document).ready(function () {
             return;
         }
 
+        if (!initialHeight || !initialWidth) {
+            initialHeight = $("#stream-object").height();
+            initialWidth = $("#stream-object").width();
+        }
+
         if (isFullscreen) {
             isFullscreen = false;
             $("#start-stream").removeClass("hidden-element");
@@ -208,10 +216,10 @@ $(document).ready(function () {
             $(".primary").removeClass("hidden-element");
             $(".secondary").removeClass("hidden-element");
 
-            $("#stream-object").height(540);
-            $("#stream-object").width(960);
-            $("#remotevideo").height(540);
-            $("#remotevideo").width(960);
+            $("#stream-object").height(initialHeight);
+            $("#stream-object").width(initialWidth);
+            $("#remotevideo").height(initialHeight);
+            $("#remotevideo").width(initialWidth);
             $("#remotevideo").css('object-fit', 'contain');
 
             $("#right-footer").css('background-color', 'rgba(0, 0, 0, 0)');

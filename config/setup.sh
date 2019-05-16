@@ -70,6 +70,15 @@ if [ $OPENSSL_VERSION -lt 111 ]; then
     fi
 fi
 
+# Generate self-signed certificates
+if [ ! -f "../app/server.crt" ] && [ ! -f "../app/server.key" ]; then
+    echo -e "\n${green}${bold}Generating self signed certificates...${normal}${nc}"
+    read -p "\nNOTE: You can leave all fields blank when generating these certificates.\n\n(Press Enter to Continue)"
+    openssl req -x509 -newkey rsa:4096 -nodes -out $SCRIPT_DIR/../app/server.crt -keyout $SCRIPT_DIR/../app/server.key -days 365
+    sudo cp $SCRIPT_DIR/../app/server.crt /etc/nginx/
+    sudo cp $SCRIPT_DIR/../app/server.key /etc/nginx/
+fi
+
 # Install libsrtp2
 if [ ${reqs[libsrtp2]} -eq 0 ]; then
     echo -e "\n${green}${bold}Installing libsrtp2...\n${normal}${nc}"

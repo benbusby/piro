@@ -28,6 +28,8 @@
     font-size: 2.2em;
     text-decoration: none;
     width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
 }
 
 body {
@@ -373,6 +375,8 @@ body {
     font-size: 1.2em;
     text-decoration: none;
     width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
     border-bottom: 1px dotted white;
 }
 
@@ -386,6 +390,8 @@ body {
     font-size: 1.2em;
     text-decoration: none;
     width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
     border-bottom: 1px solid white;
 }
 
