@@ -1,19 +1,21 @@
-![RazTot](app/static/img/raztot_logo_small.png)
-# RazTot
-#### A Raspberry Pi + WebRTC Streaming Rover, controlled with Flask-SocketIO
-[![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/helloben)
+<p align="center">
+  <img src="./app/static/img/raztot_logo_small.png" alt="raztot logo" /><br/>
+  <img src="./app/static/img/raztot_text_small.png" alt="raztot text" /><br/><br/>
+  <span>A Raspberry Pi + WebRTC Streaming Rover, controlled with Flask-SocketIO</span>
+</p>
 
 ## About
+[![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/helloben)<br/>
 The RazTot is an easy DIY project which allows you to have full control over a roving security camera at your house. The idea for the RazTot was inspired by wanting to have a camera that I could use to follow my dog around the house whenever I'm not home, but I wanted more control over the design. I also didn't like the idea of using any of the available third party closed source solutions, since I would be using this to stream video of my house when I'm not around. 
 
 *For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
 ## Browser Support (Latest Versions)
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>iOS Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
-| --------- | --------- | --------- | --------- | --------- | --------- |
-| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:| :question:|
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>iOS Safari |
+| --------- | --------- | --------- | --------- | --------- | 
+| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 
 ## Features
 - Live video streaming with low (~0.5s) latency
