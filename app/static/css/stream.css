@@ -440,11 +440,10 @@ body {
 }
 
 .media-buttons {
-    width: 50%;
     display: block;
     margin: auto;
     height: fit-content;
-    max-width: 850px;
+    width: 720px;
 }
 
 @media (max-height: 1280px) {
@@ -455,5 +454,8 @@ body {
     #remotevideo {
         width: 720px;
         height: 405px;
+    }
+    .media-buttons {
+        width: 720px;
     }
 }

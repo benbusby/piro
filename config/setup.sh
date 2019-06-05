@@ -11,6 +11,9 @@ nc='\033[0m'
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+
 set -e
 
 declare -A reqs=([libsrtp2]=0 [libnice]=0)
@@ -150,6 +153,8 @@ fi
 echo -e "${green}${bold}\nInstalling required python libraries...${normal}${nc}"
 $SCRIPT_DIR/../venv/bin/pip3 install -r requirements.txt
 
+source $SCRIPT_DIR/../venv/bin/activate
+
 # Setting up user account / database
 if [ ! -d "$SCRIPT_DIR/../migrations" ]; then
     echo -e "${green}${bold}\nCreating flask database...${normal}${nc}"
@@ -167,10 +172,11 @@ while true; do
     case $yn in
         [Yy]* )
             read -p "Username: " username
-            read -p -s "Password: " password
-            read -p -s "Confirm Password: " confirm_password
+            read -s -p "Password: " password
+            echo ""
+            read -s -p "Confirm Password: " confirm_password
             if [ "$password" == "$confirm_password" ]; then
-                $SCRIPT_DIR/../venv/bin/python3 $SCRIPT_DIR/../utils/mod_users.py $username $password
+                $SCRIPT_DIR/../venv/bin/python3 $SCRIPT_DIR/../utils/mod_users.py add $username $password
                 break
             else
                 echo -e "${red}${bold}Passwords did not match!!!\n${normal}${nc}"
@@ -185,7 +191,8 @@ done
 
 # Dataplicity setup (optional, but recommended for ease of use)
 while true; do
-    read -p "Create an account with Dataplicity? This will allow you to access the RazTot via a static https url without having to modify your home router settings. There are other services available, but this script will only walk you through setting up a Dataplicity account. (y/n) " yn
+    echo -e "\nWould you like to create an account with Dataplicity? This will allow you to access the RazTot via a static https url without having to modify your home router settings.\n\nThere are other services available, but this script will only walk you through setting up a Dataplicity account.\n"
+    read -p "Continue? (y/n) " yn
     case $yn in
         [Yy]* )
             echo -e "\n${green}${bold}Setting up Dataplicity...${normal}${nc}"
