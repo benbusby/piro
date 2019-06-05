@@ -140,6 +140,9 @@ def home():
     '''
     The RazTot's home page. Provides access to video streaming and motor control.
     '''
+    if not os.path.isdir(STATIC_FOLDER + '/captures'):
+        os.mkdir(os.path.abspath(STATIC_FOLDER) + '/captures')
+    
     return render_template('index.html')
 
 
@@ -153,13 +156,13 @@ def camera():
     if request.method == 'POST':
         if not is_running(False):
             print('Starting stream...')
-            stream_proc = "/home/pi/raztot/utils/stream.sh"
+            stream_proc = APP_ROOT + '/../utils/stream.sh'
             subprocess.Popen(stream_proc.split())
 
         return Response('{"response":"Success"}', status=200, mimetype='application/json')
 
     elif request.method == 'DELETE':
-        gstkill = "pkill gst-launch-1.0"
+        gstkill = 'pkill gst-launch-1.0'
         subprocess.call(gstkill.split())
         return Response('{"response":"Success"}', status=200, mimetype='application/json')
 
@@ -175,7 +178,7 @@ def camera():
                     os.killpg(os.getpgid(pid.pid), signal.SIGINT)
             return Response('{"response":"Successfully stopped capture"}', status=200, mimetype='application/json')
         elif json_request.get('record'):
-            capture_command = "/home/pi/raztot/utils/capture.sh"
+            capture_command = APP_ROOT + '/../utils/capture.sh'
             subprocess.Popen(capture_command.split(), preexec_fn=os.setsid)
             os.setpgrp()
             return Response('{"response":"Started capture"}', status=200, mimetype='application/json')

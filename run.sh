@@ -9,6 +9,10 @@ then
     sudo pigpiod
 fi
 
+if [[ "$VIRTUAL_ENV" == "" ]]; then
+    source venv/bin/activate
+fi
+
 if [[ $# -eq 0 ]] || [[ $1 == "remote" ]] || [[  $1 == "local" ]]; then
     # Optionally run janus (can be skipped if not testing streaming)
     while true; do
@@ -43,9 +47,12 @@ if [[ $# -eq 0 ]] || [[ $1 == "remote" ]] || [[  $1 == "local" ]]; then
     python server.py
 elif [[ $1 == "service" ]]; then
     # Start up all necessary services if executing as a systemd service
-    sudo -u pi -H bash -c "pigpiod"
-    sudo -u pi -H bash -c "/opt/janus/bin/janus &"
-    sudo -u pi -H bash -c ". /home/pi/raztot/venv/bin/activate; python /home/pi/raztot/server.py &"
+    sudo pkill janus
+    sleep 0.5
+    sudo /opt/janus/bin/janus -a $RANDOM_KEY &
+    export FLASK_HOST="127.0.0.1"
+    su pi
+    python server.py
 else
     echo "Invalid argument provided."
     exit 1
