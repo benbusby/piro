@@ -71,7 +71,7 @@ To setup the RazTot software, power up your Raspberry Pi and run the following c
 cd
 git clone https://github.com/benbusby/raztot.git
 cd raztot/config
-./setup.sh
+sudo ./setup.sh
 ```
 The setup script will determine what needs to be installed and walk you through each step of the process. It can take quite a while depending on your network speed, but is a mostly hands off process so you don't need to watch it the whole time.
 
