@@ -38,14 +38,8 @@ CAPTURES_FOLDER = os.path.join(APP_ROOT, 'static', 'captures')
 
 #-----[ APP CONFIGURATION AND ROUTING ]-----#
 auto = Autodoc(app)
-
 app.secret_key = os.urandom(24)
-
-###############
 app.config['FLASK_HOST'] = os.environ.get('FLASK_HOST') or '0.0.0.0'
-test_ips = ['localhost', '192.168.0.14']
-###############
-
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # turn the flask app into a socketio app

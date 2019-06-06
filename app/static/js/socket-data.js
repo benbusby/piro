@@ -6,10 +6,10 @@ $(document).ready(function () {
 
     document.onkeydown = function (event) {
         socket.emit('move', {
-            left: event.keyCode == "37" ? 1 : 0,
-            up: event.keyCode == "38" ? 1 : 0,
-            right: event.keyCode == "39" ? 1 : 0,
-            down: event.keyCode == "40" ? 1 : 0
+            left: (event.keyCode || event.which) == "37" ? 1 : 0,
+            up: (event.keyCode || event.which) == "38" ? 1 : 0,
+            right: (event.keyCode || event.which) == "39" ? 1 : 0,
+            down: (event.keyCode || event.which) == "40" ? 1 : 0
         });
     }
 
