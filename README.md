@@ -64,6 +64,12 @@ Once you're done, you can run the ```test_motors.sh``` script in the utils/ fold
 ./test_motors.sh 17 22
 ```
 *Note: You should have the motors positioned so that the wheel isn't in contact with a surface. Otherwise the wheels will roll around while they're being tested.*
+#### IMPORTANT!!!
+If you don't use pins 17 and 22, you will need to make a small change to ```app/routes.py``` with the new left/right servo pin numbers. There are only two values to change in that file:
+```py
+SERVO_L = 17 # Change this one
+SERVO_R = 22 # And this one
+```
 
 ### Software Setup
 To setup the RazTot software, power up your Raspberry Pi and run the following commands:
