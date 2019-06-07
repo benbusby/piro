@@ -39,16 +39,6 @@ sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev 
 sudo apt-get -y install python3-dev python3-venv
 sudo apt-get -y install pigpio
 
-# NGINX setup
-if [ ! -d "/etc/nginx/" ]; then 
-    sudo apt-get -y install nginx
-    sudo /etc/init.d/nginx start
-    sudo cp nginx_server.conf /etc/nginx/sites-available/default
-    sudo /etc/init.d/nginx restart
-else
-    echo -e "\n${green}${bold}NGINX already set up.\n${normal}${nc}"
-fi
-
 # Video streaming requirements
 sudo apt-get -y install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-pulseaudio
 
@@ -80,6 +70,16 @@ if [ ! -f "../app/server.crt" ] && [ ! -f "../app/server.key" ]; then
     openssl req -x509 -newkey rsa:4096 -nodes -out $SCRIPT_DIR/../app/server.crt -keyout $SCRIPT_DIR/../app/server.key -days 365
     sudo cp $SCRIPT_DIR/../app/server.crt /etc/nginx/
     sudo cp $SCRIPT_DIR/../app/server.key /etc/nginx/
+fi
+
+# NGINX setup
+if [ ! -d "/etc/nginx/" ]; then 
+    sudo apt-get -y install nginx
+    sudo /etc/init.d/nginx start
+    sudo cp nginx_server.conf /etc/nginx/sites-available/default
+    sudo /etc/init.d/nginx restart
+else
+    echo -e "\n${green}${bold}NGINX already set up.\n${normal}${nc}"
 fi
 
 # Install libsrtp2
