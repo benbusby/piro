@@ -33,7 +33,7 @@ done
 echo -e "${green}${bold}\nInstalling pre-requisites...${normal}${nc}"
 
 # Janus related requirements
-sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev libogg-dev libcurl4-openssl-dev liblua5.2-dev libconfig-dev pkg-config gengetopt libtool automake gtk-doc-tools
+sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev libffi-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev libogg-dev libcurl4-openssl-dev liblua5.2-dev libconfig-dev pkg-config gengetopt libtool automake gtk-doc-tools
 
 # RazTot/Flask requirements
 sudo apt-get -y install python3-dev python3-venv
