@@ -97,7 +97,7 @@ function startJanus(callback) {
                         },
                         error: function (error) {
                             Janus.error("  -- Error attaching plugin... ", error);
-                            bootbox.alert("Error attaching plugin... " + error);
+                            alert("Error attaching plugin... " + error);
                         },
                         onmessage: function (msg, jsep) {
                             Janus.debug(" ::: Got a message :::");
@@ -137,7 +137,7 @@ function startJanus(callback) {
                                     }
                                 }
                             } else if (msg["error"] !== undefined && msg["error"] !== null) {
-                                bootbox.alert(msg["error"]);
+                                alert(msg["error"]);
                                 stopStream();
                                 return;
                             }
@@ -159,7 +159,7 @@ function startJanus(callback) {
                                         },
                                         error: function (error) {
                                             Janus.error("WebRTC error:", error);
-                                            bootbox.alert("WebRTC error... " + JSON.stringify(error));
+                                            alert("WebRTC error... " + JSON.stringify(error));
                                         }
                                     });
                             }
