@@ -1,13 +1,13 @@
 <p align="center">
   <img src="./app/static/img/raztot_logo_small.png" alt="raztot logo" /><br/>
   <img src="./app/static/img/raztot_text_small.png" alt="raztot text" /><br/><br/>
-  <span>A Raspberry Pi + WebRTC Streaming Rover, controlled with Flask-SocketIO</span>
+  <span>A Raspberry Pi + WebRTC Streaming Rover, remotely controlled with Flask-SocketIO</span>
 </p>
 
 ## About
 [![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/helloben)<br/>
-The RazTot is an easy DIY project which allows you to have full control over a roving security camera at your house. The idea for the RazTot was inspired by wanting to have a camera that I could use to follow my dog around the house whenever I'm not home, but I wanted more control over the design. I also didn't like the idea of using any of the available third party closed source solutions, since I would be using this to stream video of my house when I'm not around. 
+The RazTot is an easy DIY project which allows you to remotely control a roving security camera securely from your browser. 
 
 *For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
@@ -22,7 +22,10 @@ The RazTot is an easy DIY project which allows you to have full control over a r
 - Server side video recording
 - Client side image capture
 - Servo control to move around with 360 degree turning capability
-- HTTPS web page controls (if configured with Dataplicity or a similar service)
+- Intuitive web app for controlling movement and video
+- HTTPS connection (when configured with Dataplicity or a similar service)
+  - Requires an active internet connection, and the RPi to be connected to your home network
+  - Note: HTTPS is required to stream video from the device remotely, as WebRTC will not work in most modern browsers when streamed from regular HTTP. Keep this in mind if you use a service other than Dataplicity, or decide to spin up your own server.
 - User authentication restricted streaming and controls
 
 ## Parts
@@ -56,7 +59,9 @@ You should see ```detected=1``` in the output of the command if the camera was c
 #### Wheels
 The main component that needs setting up is the two servo wheels for the RazTot. This is pretty straightforward and just requires a few male->female jumper cables.
 
-Each motor has three wires: ground (brown), power (red), and signal (yellow). Take three jumper cables and plug the male side into the slots for each wire. With the female side of the cable, attach it to [the correct GPIO pins on the Raspberry Pi](https://pinout.xyz/#). 
+Each motor has three wires: ground, power, and signal. For the servos I purchased, the corresponding colors for these were brown, red, and yellow. If you purchased different servos, make sure to look up what the proper colors are on your model. 
+
+Take three jumper cables and plug the male side into the slots for each wire. With the female side of the cable, attach it to [the correct GPIO pins on the Raspberry Pi](https://pinout.xyz/#). 
 
 Using that pin layout, the power cable for each wheel should go in the top right two pins labelled "5V". The ground cables can go on any pin labelled "Ground" in that diagram. The signal cables can go to any of the BCM pins that don't have labels next to them in parentheses. Keep track of which wire is going where, otherwise the wheels probably won't work. Repeat for the other wheel and you're good to go!
 
