@@ -1,13 +1,9 @@
-<p align="center">
-  <img src="./app/static/img/raztot_logo_small.png" alt="raztot logo" /><br/>
-  <img src="./app/static/img/raztot_text_small.png" alt="raztot text" /><br/><br/>
-  <span>A Raspberry Pi + WebRTC Streaming Rover, remotely controlled with Flask-SocketIO</span>
-</p>
+![Raztot Banner](app/static/img/raztot_banner.png)
 
-## About
+
 [![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/helloben)<br/>
-The RazTot is an easy DIY project which allows you to remotely control a roving security camera securely from your browser.
+[![GitHub License](https://img.shields.io/github/license/benbusby/raztot)](https://github.com/benbusby/raztot) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/helloben)<br/>
+The RazTot is an easy DIY project that allows you to remotely control a roving security camera securely from your browser.
 
 ![RaztotGif](app/static/img/raztot.gif)
 
