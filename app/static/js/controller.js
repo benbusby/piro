@@ -158,15 +158,6 @@ $(document).ready(() => {
         });
     }
 
-    var request = new XMLHttpRequest();
-    request.open('GET', "/static/misc/current_version.txt", true);
-    request.send(null);
-    request.onreadystatechange = function () {
-        if (request.readyState === 4 && request.status === 200) {
-            $("#version-num").html(request.responseText);
-        }
-    }
-
     sendCameraSetting('GET', data => {
         if (data && data.janus_key) {
             janusKey = data.janus_key;
