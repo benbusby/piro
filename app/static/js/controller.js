@@ -1,7 +1,6 @@
 // Main janus api key
 var janusKey;
 
-// Layout related values
 var isRecording = false;
 var isStreaming = false;
 var isDownloading = false;
@@ -13,35 +12,13 @@ var data = [];
 var initialWidth;
 var initialHeight;
 
-$(document).ready(function () {
-
-    // Get current version number
-    var request = new XMLHttpRequest();
-    request.open('GET', "/static/misc/current_version.txt", true);
-    request.send(null);
-    request.onreadystatechange = function () {
-        if (request.readyState === 4 && request.status === 200) {
-            $("#version-num").html(request.responseText);
-        }
-    }
-
-    sendCameraSetting('GET', function (data) {
-        if (data.janus_key) {
-            janusKey = data.janus_key;
-        } else {
-            alert('Janus api key was unable to be found. Video streaming will not work.');
-        }
-        console.log(data.janus_key);
-    });
-
-    // Starts janus session if camera is connected and not already streaming
-    function janusSetup() {
+$(document).ready(() => {
+    const janusSetup = () => {
         if (isStreaming) {
             toggleStream();
             return;
         }
 
-        // Uses vcgencmd get_camera to see if the camera is properly connected
         if ($("#start-stream").hasClass("disabled")) {
             alert("Cannot start stream without a connected camera. Please connect the camera and try again.");
             return;
@@ -51,21 +28,18 @@ $(document).ready(function () {
         startJanus(toggleStream);
     }
 
-    // Begins the stream if not running, otherwise kills the stream
-    function toggleStream() {
+    const toggleStream = () => {
         if (isStreaming) {
             $("#start-stream").html('Stopping...');
             $("#stream-status").html("Off");
             $("#stream-status").removeClass("option-on");
 
-            // Disable capture buttons
             $("#recording-button").addClass("inner-disabled");
             $("#recording-button").removeClass("recording-inner");
 
             $("#image-button").addClass("inner-disabled");
             $("#image-button").removeClass("image-inner");
 
-            // Send DELETE to the camera api to disable the stream
             sendCameraSetting('DELETE', new function () {
                 $("#start-stream").html('Start Stream');
                 $("#param-embed").remove();
@@ -79,7 +53,6 @@ $(document).ready(function () {
             return;
         }
 
-        // If the capture buttons have been disabled, re-enable them
         if ($("#recording-button").hasClass("inner-disabled")) {
             $("#recording-button").removeClass("inner-disabled");
             $("#recording-button").addClass("recording-inner");
@@ -102,8 +75,7 @@ $(document).ready(function () {
         });
     }
 
-    // Snaps a picture and saves the result locally
-    function toggleImage() {
+    const toggleImage = () => {
         if (!isStreaming) {
             //alert("Must be streaming to take picture.");
             return;
@@ -117,10 +89,8 @@ $(document).ready(function () {
         }, 250);
     }
 
-    // Starts/stops capture -- starting capture acquires images from the stream at ~1hz
-    function toggleRecord() {
+    const toggleRecord = () => {
         if (!isStreaming) {
-            //alert("Must be streaming to begin recording.");
             return;
         }
 
@@ -148,8 +118,7 @@ $(document).ready(function () {
         }
     }
 
-    var captureImage = function () {
-        // Create canvas element to capture frame of video
+    const captureImage = () => {
         var video = $("#remotevideo")[0];
         var canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
@@ -161,7 +130,6 @@ $(document).ready(function () {
         var filename = new Date().toISOString();
         filename = filename.substring(0, filename.indexOf('.')) + '.jpg';
 
-        // Save image with dummy anchor
         var a = document.createElement('a');
         a.href = dataURL;
         a.download = filename;
@@ -169,8 +137,7 @@ $(document).ready(function () {
         a.click();
     };
 
-    // Updates camera to start, stop, or record a stream
-    function sendCameraSetting(method, callback, data, skipAlert) {
+    const sendCameraSetting = (method, callback, data, skipAlert) => {
         $.ajax({
             type: method,
             url: '/camera',
@@ -179,10 +146,10 @@ $(document).ready(function () {
             dataType: "json",
             data: JSON.stringify(data),
             processData: false,
-            success: function (responseData) {
+            success: responseData => {
                 typeof callback === 'function' && callback(responseData);
             },
-            error: function () {
+            error: () => {
                 typeof callback === 'function' && callback();
                 if (!skipAlert) {
                     alert("There was an error sending the provided camera settings. Please check your network connection and the provided values, and try again.");
@@ -191,12 +158,27 @@ $(document).ready(function () {
         });
     }
 
-    // ----------------------------------------------------------------------------------
-    // Click Handlers
-    // ----------------------------------------------------------------------------------
+    var request = new XMLHttpRequest();
+    request.open('GET', "/static/misc/current_version.txt", true);
+    request.send(null);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            $("#version-num").html(request.responseText);
+        }
+    }
+
+    sendCameraSetting('GET', data => {
+        if (data && data.janus_key) {
+            janusKey = data.janus_key;
+        } else {
+            alert('Janus api key was unable to be found. Video streaming will not work.');
+        }
+        console.log(data.janus_key);
+    });
+
     $("#capture").click(captureImage);
 
-    $("#toggle-fullscreen").click(function () {
+    $("#toggle-fullscreen").click(() => {
         if (!isStreaming) {
             alert("Must be streaming to toggle fullscreen mode.");
             return;
@@ -249,22 +231,22 @@ $(document).ready(function () {
     $(".primary").on('click', toggleImage);
     $(".secondary").on('click', toggleRecord);
 
-    $(window).bind('beforeunload', function () {
+    $(window).bind('beforeunload', () => {
         $('#param-embed').remove();
         $('#stream-embed').remove();
 
         sendCameraSetting('DELETE', null, null, true);
     });
 
-    $(".options-btn").on("click", function () {
+    $(".options-btn").on("click", () => {
         $(".options").toggleClass("open");
     });
 
-    $(".slider").on("click", function () {
+    $(".slider").on("click", () => {
         $(".background").toggleClass("expand");
     });
 
-    $("#clear-drive").on("click", function () {
+    $("#clear-drive").on("click", () => {
         if (confirm("Are you sure you want to proceed with clearing the recordings folder?")) {
             $.ajax({
                 type: 'DELETE',
@@ -272,10 +254,10 @@ $(document).ready(function () {
                 contentType: false,
                 cache: false,
                 processData: false,
-                success: function () {
+                success: () => {
                     alert("Recordings deleted!");
                 },
-                error: function () {
+                error: () => {
                     alert("Failed to clear out recordings.");
                 }
             });
