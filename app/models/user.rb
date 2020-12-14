@@ -1,10 +1,10 @@
-require 'bcrypt'
-require 'sqlite3'
+require "bcrypt"
+require "sqlite3"
 
 module UserFields
-  USERNAME = 'username'
-  PW_HASH = 'pw_hash'
-  UUID = 'uuid'
+  USERNAME = "username"
+  PW_HASH = "pw_hash"
+  UUID = "uuid"
 end
 
 def gen_hash(text)
@@ -18,7 +18,7 @@ end
 class User
   @user_db = nil
 
-  def initialize(path = __dir__ + '/../user.db')
+  def initialize(path = __dir__ + "/../user.db")
     puts path
     @user_db = SQLite3::Database.new path
     @user_db.results_as_hash = true
@@ -71,13 +71,13 @@ class User
 
   def check_user_password(username, password)
     user = get_user(UserFields::USERNAME, username)
-    check_hash(password, user['pw_hash'])
+    check_hash(password, user["pw_hash"])
   end
 
   def get_id(username, password)
     user = get_user(UserFields::USERNAME, username)
-    if user != nil and check_hash(password, user['pw_hash'])
-      user['uuid']
+    if user != nil and check_hash(password, user["pw_hash"])
+      user["uuid"]
     end
   end
 
