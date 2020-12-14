@@ -33,7 +33,6 @@
 }
 
 body {
-    /*background-color: #641E16 !important;*/
     background-image: url('../img/background.png');
     background-size: 75px;
     overflow: hidden;
@@ -75,7 +74,6 @@ body {
 }
 
 .image-inner {
-    /*background-color: #9e1919;*/
     background-color: rgb(80, 80, 80);
     width: 100%;
     height: 100%;
@@ -241,10 +239,6 @@ body {
     -moz-animation: FadeAnimation 1s infinite;
     -o-animation: FadeAnimation 1s infinite;
     animation: FadeAnimation 1s infinite;
-}
-
-.options-div {
-    /*display: none;*/
 }
 
 .options-btn {

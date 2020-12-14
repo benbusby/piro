@@ -9,7 +9,7 @@ red='\033[0;31m'
 green='\033[0;32m'
 nc='\033[0m'
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SCRIPT_DIR="$( builtin cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
@@ -64,10 +64,19 @@ if [ $OPENSSL_VERSION -lt 111 ]; then
 fi
 
 # Generate self-signed certificates
-if [ ! -f "../app/server.crt" ] && [ ! -f "../app/server.key" ]; then
+if [ ! -f "$SCRIPT_DIR/../app/server.crt" ] && [ ! -f "$SCRIPT_DIR/../app/server.key" ]; then
     echo -e "\n${green}${bold}Generating self signed certificates...${normal}${nc}"
-    read -p "\nNOTE: You can leave all fields blank when generating these certificates.\n\n(Press Enter to Continue)"
-    openssl req -x509 -newkey rsa:4096 -nodes -out $SCRIPT_DIR/../app/server.crt -keyout $SCRIPT_DIR/../app/server.key -days 365
+    #read -p "\nNOTE: You can leave all fields blank when generating these certificates.\n\n(Press Enter to Continue)"
+    #openssl req -x509 -newkey rsa:4096 -nodes -out $SCRIPT_DIR/../app/server.crt -keyout $SCRIPT_DIR/../app/server.key -days 365
+    openssl req \
+        -new \
+        -newkey rsa:4096 \
+        -days 365 \
+        -nodes \
+        -x509 \
+        -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
+        -keyout $SCRIPT_DIR/../app/server.key \
+        -out $SCRIPT_DIR/../app/server.crt
 fi
 
 # NGINX setup

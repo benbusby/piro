@@ -9,46 +9,28 @@ USAGE=$(cat <<-END
     Flags:
         --skip-janus : Skips launching Janus Gateway
                        Note: For debugging only (Janus Gateway is required for video streaming)
+        --skip-gpio  : Skips initializing the Pi GPIO daemon
+                       Note: Required for controlling the servo motors
  
 END
 )
 
-if [[ $# -eq 0 ]]; then
-    echo -e "$USAGE"
-    return
-fi
+declare -A ARGS=([remote]="0.0.0.0" [local]="127.0.0.1")
+test "${ARGS[$1]+_}" && export BIND_HOST="${ARGS[$1]}"
 
-export RANDOM_KEY=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo ''`
-NETWORK_IP=(`hostname -I`)
-
-if ! pgrep -x "pigpiod" > /dev/null
-then
+if [[ "$(command -v pigpiod)" ]] && [[ $* != *--skip-gpio* ]]; then
     echo "Starting pigpiod..."
     sudo pigpiod
 fi
 
-if [[ "$VIRTUAL_ENV" == "" ]]; then
-    source venv/bin/activate
-fi
-
-# Start flask server either on local network or public
-if [[ $1 == "local" ]]; then
-    export FLASK_HOST="127.0.0.1"
-elif [[ $1 == "remote" ]]; then
-    export FLASK_HOST="0.0.0.0"
-else
-    echo -e "$USAGE"
-    return
-fi
-
 # Start (or skip) janus gateway for streaming
-if [[ $* == *--skip-janus* ]]; then
-    echo -e "Skipping Janus..."
-else
+if [[ $* != *--skip-janus* ]]; then
     sudo pkill janus
     sleep 0.5
     echo "Using api key: $RANDOM_KEY"
     sudo /opt/janus/bin/janus -a $RANDOM_KEY &
 fi
 
-python server.py
+bundle config set path '.bundle/'
+bundle install
+bundle exec app/server.rb
