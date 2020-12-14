@@ -19,7 +19,7 @@ window.onload = () => {
 
         // Always show main drive state, even if not streaming
         $('#drive-state').html(data['used'] + ' / ' + data['total'] +
-            ' GB (' + data['percent'] + '% full)');
+            ' (' + data['percent'] + ' full)');
 
         if (parseFloat(data['percent']) > 75.0) {
             $('#drive-state').removeClass("option-caution");
