@@ -11,7 +11,7 @@ The RazTot is an easy DIY project that allows you to remotely control a roving s
 
 *For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
-*For the previous Python implementation of the project, refer to the [python-raztot](https://github.com/benbusby/raztot/tree/python-raztot) branch.*
+***!!! NOTE:** The `main` branch of this project is currently being refactored and updated from the previous implementation, and not all features have been tested for functionality. If you would like to use a fully functioning release of the project, please use the [python-raztot](https://github.com/benbusby/raztot/tree/python-raztot) branch instead.*
 
 ## Browser Support (Latest Versions)
 
