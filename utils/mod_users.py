@@ -1,10 +1,11 @@
 #!/usr/bin/env python2.7
-'''
+"""
 This script lists, adds, and deletes users based on the command line
 arguments provided. Currently, users can be marked as "admin", which allows
 control over the motors on the RazTot.
-'''
+"""
 import sys
+
 sys.path.append("..")
 
 from app import db
@@ -19,7 +20,7 @@ ENDC = '\033[0m'
 BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
 
-USAGE='''
+USAGE = '''
 ================================================================
 USAGE:
 python mod_users.py <option> [argument(s)]
@@ -34,6 +35,7 @@ OPTIONS:
          they are allowed control over the RazTot's movement
 ================================================================
 '''
+
 
 def main(args):
     if len(args) <= 1:
@@ -50,7 +52,8 @@ def main(args):
         for u in users:
             if len(args) == 3 and args[1] == 'delete' and args[2] == u.username:
                 db.session.delete(u)
-                print(WARNING + BOLD + '\n--- DELETED "' + u.username + '"' + ENDC)
+                print(
+                    WARNING + BOLD + '\n--- DELETED "' + u.username + '"' + ENDC)
     elif args[1] == 'add':
         if len(args) == 5 and 'admin' in args[4]:
             u = User(username=args[2], admin=True)
@@ -69,14 +72,17 @@ def main(args):
     users = User.query.all()
     list_users(users)
 
+
 def list_users(users):
     print(OKGREEN + BOLD + '\n-----------------------------------------')
     print('Users: ' + str(len(users)) + ' total')
     for i in range(0, len(users)):
         spaces = '      ' if len(users) < 10 else '       '
-        print('  (' + str(i + 1) + ') ID: ' + str(users[i].id) + '\n' + spaces + 'Username: ' + users[i].username + ('\n' + spaces + '(Admin)' if users[i].admin else ''))
+        print('  (' + str(i + 1) + ') ID: ' + str(
+            users[i].id) + '\n' + spaces + 'Username: ' + users[i].username + (
+                  '\n' + spaces + '(Admin)' if users[i].admin else ''))
     print('-----------------------------------------\n' + ENDC)
+
 
 if __name__ == '__main__':
     main(sys.argv)
-
