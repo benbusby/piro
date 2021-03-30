@@ -32,6 +32,9 @@ done
 
 echo -e "${green}${bold}\nInstalling pre-requisites...${normal}${nc}"
 
+# General build requirements
+sudo apt -y install meson
+
 # Janus related requirements
 sudo apt-get -y install libmicrohttpd-dev libjansson-dev libssl-dev libsrtp-dev libffi-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev libogg-dev libcurl4-openssl-dev liblua5.2-dev libconfig-dev pkg-config gengetopt libtool automake gtk-doc-tools
 
@@ -100,14 +103,12 @@ if [ ${reqs[libnice]} -eq 0 ]; then
     echo -e "\n${green}${bold}Installing libnice...\n${normal}${nc}"
     git clone https://gitlab.freedesktop.org/libnice/libnice
     cd libnice
+
+    meson builddir
+    ninja -C builddir
+    ninja -C builddir test
+    sudo ninja -C builddir install
     
-    # Raspbian specific fix
-    sed -i -e 's/NICE_ADD_FLAG(\[-Wcast-align\])/# NICE_ADD_FLAG(\[-Wcast-align\])/g' ./configure.ac
-    sed -i -e 's/NICE_ADD_FLAG(\[-Wno-cast-function-type\])/# NICE_ADD_FLAG(\[-Wno-cast-function-type\])/g' ./configure.ac
-    
-    ./autogen.sh
-    ./configure --prefix=/usr
-    make && sudo make install
     cd ../
     rm -rf libnice/
 fi
@@ -151,7 +152,7 @@ fi
 
 # Install all python requirements
 echo -e "${green}${bold}\nInstalling required python libraries...${normal}${nc}"
-$SCRIPT_DIR/../venv/bin/pip3 install -r requirements.txt
+$SCRIPT_DIR/../venv/bin/pip3 install -r $SCRIPT_DIR/../requirements.txt
 
 source $SCRIPT_DIR/../venv/bin/activate
 
