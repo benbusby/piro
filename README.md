@@ -2,8 +2,8 @@
 
 
 [![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)
-[![GitHub License](https://img.shields.io/github/license/benbusby/raztot)](https://github.com/benbusby/raztot-private/blob/main/LICENSE)
-[![build](https://github.com/benbusby/raztot/workflows/build/badge.svg)](https://github.com/benbusby/raztot-private/actions)
+[![GitHub License](https://img.shields.io/github/license/benbusby/raztot)](https://github.com/benbusby/raztot/blob/main/LICENSE)
+[![build](https://github.com/benbusby/raztot/workflows/build/badge.svg)](https://github.com/benbusby/raztot/actions)
 
 The RazTot is an easy DIY project that allows you to remotely control a roving security camera securely from your browser.
 
