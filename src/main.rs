@@ -14,7 +14,6 @@ use {
 
     std::net::SocketAddr,
     std::io::{Read, BufRead},
-    structopt::StructOpt,
     tokio::stream::{StreamExt},
     tokio::sync::watch,
 };
