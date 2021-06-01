@@ -1,13 +1,12 @@
-![Raztot Banner](app/static/img/raztot_banner.png)
-
+![Raztot Banner](img/raztot_banner.png)
 
 [![GitHub release](https://img.shields.io/github/release/benbusby/raztot.svg)](https://github.com/benbusby/raztot/releases/)
 [![GitHub License](https://img.shields.io/github/license/benbusby/raztot)](https://github.com/benbusby/raztot/blob/main/LICENSE)
-[![build](https://github.com/benbusby/raztot/workflows/build/badge.svg)](https://github.com/benbusby/raztot/actions)
+[![ARMv7 build](https://github.com/benbusby/raztot/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/benbusby/raztot/actions/workflows/build.yml)
 
 The RazTot is an easy DIY project that allows you to remotely control a roving security camera securely from your browser.
 
-![RaztotGif](app/static/img/raztot.gif)
+![RaztotGif](img/raztot.gif)
 
 *For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
@@ -108,8 +107,8 @@ anytime the Pi is powered on to start the Flask app, Janus server, and pigpio da
 - Motion is achieved using the arrow keys on your keyboard, or by pressing the arrow key buttons on the web page. Each key will send a command to the RazTot to move wheels accordingly for whichever direction you are trying to navigate.
 
 ## Images
-![RazTot First Build](app/static/img/first_build.jpg)
-![RazTot Web App](app/static/img/web_app.png)
+![RazTot First Build](img/first_build.jpg)
+![RazTot Web App](img/web_app.png)
 
 For more images, see [the Imgur album](https://imgur.com/a/DZqkBm9).
 
