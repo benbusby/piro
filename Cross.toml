@@ -1,0 +1,4 @@
+[build.env]
+passthrough = [
+    "RAZTOT_SERVOS",
+]
