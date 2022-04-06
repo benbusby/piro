@@ -72,12 +72,10 @@ Once you're done, you can run the ```test_motors.sh``` script in the utils/ fold
 ```
 *Note: You should have the motors positioned so that the wheel isn't in contact with a surface. Otherwise the wheels will roll around while they're being tested.*
 #### IMPORTANT!!!
-If you don't use pins 17 and 22, you will need to make a small change to ```app/models/gpio.rb``` with the new left/right servo pin numbers. There are only two values to change in that file:
-```ruby
-module SERVO_PINS
-  LEFT = 17
-  RIGHT = 22
-end
+If you don't use pins 17 and 22, you will need to update your environment variables to reflect the correct pins:
+```bash
+export SERVO_L=<L pin>
+export SERVO_R=<R pin>
 ```
 
 ### Software Setup
