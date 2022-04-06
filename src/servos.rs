@@ -29,7 +29,7 @@ const STOP: u16 = 0;
 /// # Arguments
 /// * `data` - the raw (json) string sent by the user. If a key is pressed, it will
 ///            be sent as a 1, otherwise it will be a 0
-fn servo_control(data: &str) {
+pub fn servo_control(data: &str) {
     let command: ServoCommand = serde_json::from_str(data).unwrap();
 
     if command.left != 0 || command.right != 0 {
@@ -56,7 +56,7 @@ fn servo_control(data: &str) {
 /// * `r_val` - the PWM value for the "right" servo
 fn send_command(l_val: u16, r_val: u16) {
     let servo_l: &str = &*env::var("servo_l").unwrap_or("17".to_string());
-    let servo_r: &str = &*env::var("servo_r").unwrap_or("27".to_string());
+    let servo_r: &str = &*env::var("servo_r").unwrap_or("22".to_string());
 
     Command::new("pigs")
         .args(&["SERVO", servo_l, &l_val.to_string()])

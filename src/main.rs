@@ -4,8 +4,10 @@ mod stream;
 use {
     hyper::{
         service::{make_service_fn, service_fn},
+        body::HttpBody,
         http::header,
         Body,
+        Method,
         StatusCode,
         Request,
         Response,
@@ -14,16 +16,80 @@ use {
     },
 
     std::net::SocketAddr,
-    std::io::{Read, BufRead},
+    std::str,
     tokio::stream::{StreamExt},
     tokio::sync::watch,
 };
 
+const HTML: &'static str = "
+<h1>Piro Stream</h1>
+<img src='/stream'>
+<script>
+    var xhr = new XMLHttpRequest();
+    var url = '/servo';
+    var fired = false;
+    document.onkeydown = function(event) {
+        if (fired) {
+            return;
+        }
+
+        fired = true;
+
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = () => {
+           if (xhr.readyState === 4 && xhr.status === 200) {
+               console.log('Servo command submitted');
+           }
+        };
+
+        var data = JSON.stringify({
+           left: (event.keyCode || event.which) == '37' ? 1 : 0,
+           up: (event.keyCode || event.which) == '38' ? 1 : 0,
+           right: (event.keyCode || event.which) == '39' ? 1 : 0,
+           down: (event.keyCode || event.which) == '40' ? 1 : 0
+        });
+
+        xhr.send(data);
+    }
+
+    document.onkeyup = function(event) {
+        fired = false;
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = () => {
+           if (xhr.readyState === 4 && xhr.status === 200) {
+               console.log('Servo command submitted');
+           }
+        };
+
+        var data = JSON.stringify({
+           left: 0,
+           up: 0,
+           right: 0,
+           down: 0
+        });
+
+        xhr.send(data);
+    }
+</script>
+";
+
 async fn serve_req(request: Request<Body>, rx: watch::Receiver<Vec<u8>>) -> Result<Response<Body>> {
-    match (request.uri().path(), request.headers().contains_key(header::UPGRADE)) {
+    match (request.method(), request.uri().path(), request.headers().contains_key(header::UPGRADE)) {
         // HTTP Requests
-        ("/", false) => home_page(),
-        ("/stream", false) => stream_response(rx),
+        (&Method::GET, "/", false) => home_page(),
+        (&Method::GET, "/stream", false) => stream_response(rx),
+        (&Method::POST, "/servo", false) => {
+            let bytes: Vec<u8> = request.into_body().data().await.unwrap().unwrap().to_vec();
+            let s = String::from_utf8(bytes).expect("Found invalid UTF-8");
+            servos::servo_control(&s);
+            Ok(Response::builder()
+                .status(StatusCode::OK)
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .body(Body::from("<h1>OK</h1>"))
+                .unwrap())
+        },
         // TODO: Websocket servo requests
         _ => { // 404 for everything else
             Ok(Response::builder()
@@ -39,7 +105,7 @@ fn home_page() -> Result<Response<Body>> {
     Ok(Response::builder()
         .status(StatusCode::OK)
         .header("Content-Type", "text/html; charset=UTF-8")
-        .body(Body::from("<h1>Stream test</h1><img src='/stream'>"))
+        .body(Body::from(HTML))
         .unwrap())
 }
 
