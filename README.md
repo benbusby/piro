@@ -10,8 +10,6 @@ The RazTot is an easy DIY project that allows you to remotely control a roving s
 
 *For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
-***!!! NOTE:** The `main` branch of this project is currently being refactored and updated from the previous implementation, and not all features have been tested for functionality. If you would like to use a fully functioning release of the project, please use the [python-raztot](https://github.com/benbusby/raztot/tree/python-raztot) branch instead.*
-
 ## Browser Support (Latest Versions)
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>iOS Safari |
@@ -19,15 +17,12 @@ The RazTot is an easy DIY project that allows you to remotely control a roving s
 | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 
 ## Features
-- Live video streaming with low (~0.5s) latency
-- Server side video recording
-- Client side image capture
-- Servo control to move around with 360 degree turning capability
-- Intuitive web app for controlling movement and video
-- HTTPS connection (when configured with Dataplicity or a similar service)
-  - Requires an active internet connection, and the RPi to be connected to your home network
-  - Note: HTTPS is required to stream video from the device remotely, as WebRTC will not work in most modern browsers when streamed from regular HTTP. Keep this in mind if you use a service other than Dataplicity, or decide to spin up your own server.
-- User authentication restricted streaming and controls
+- Video streaming
+- Servo control for moving around on wheels or aiming the camera
+- Cutting edge HTML
+- Bleeding edge CSS
+- Oxidizing edge Rust performance
+- Everything else you could ever want
 
 ## Parts
 
@@ -55,10 +50,18 @@ Once the camera is connected, run:
 vcgencmd get_camera
 ```
 
-You should see ```detected=1``` in the output of the command if the camera was connected properly.
+You should see ```supported=1 detected=1``` in the output of the command if the camera was connected properly.
 
-#### Wheels
-The main component that needs setting up is the two servo wheels for the RazTot. This is pretty straightforward and just requires a few male->female jumper cables.
+#### Servos
+The main component that needs setting up is servo support for the RazTot. This is pretty straightforward and just requires a single package and some male->female jumper cables.
+
+The package you'll need to control the servos is called [pigpio](https://abyz.me.uk/rpi/pigpio/). You can [download it here](https://abyz.me.uk/rpi/pigpio/download.html).
+
+Once you have the library downloaded, start the pigpio daemon with `sudo pigpiod`.
+
+___
+
+Now to connect the actual servos to the Pi!
 
 Each motor has three wires: ground, power, and signal. For the servos I purchased, the corresponding colors for these were brown, red, and yellow. If you purchased different servos, make sure to look up what the proper colors are on your model.
 
@@ -66,50 +69,43 @@ Take three jumper cables and plug the male side into the slots for each wire. Wi
 
 Using that pin layout, the power cable for each wheel should go in the top right two pins labelled "5V". The ground cables can go on any pin labelled "Ground" in that diagram. The signal cables can go to any of the BCM pins that don't have labels next to them in parentheses. Keep track of which wire is going where, otherwise the wheels probably won't work. Repeat for the other wheel and you're good to go!
 
-Once you're done, you can run the ```test_motors.sh``` script in the utils/ folder to check if your motors are working properly. The script takes two arguments -- the two BCM pin numbers you plugged the signal cables into (i.e. 17 and 22).
+Once you're done, you can use pigpio to check if your motors are working properly.
+
 ```bash
-./test_motors.sh 17 22
+pigs SERVO 22 1000 # Send clockwise pwm command to servo 22
+pigs SERVO 17 2000 # Send counterclockwise pwm command to servo 17
+pigs SERVO 22 0 # Stop servo 22
+pigs SERVO 17 0 # Stop servo 17
 ```
 *Note: You should have the motors positioned so that the wheel isn't in contact with a surface. Otherwise the wheels will roll around while they're being tested.*
-#### IMPORTANT!!!
-If you don't use pins 17 and 22, you will need to update your environment variables to reflect the correct pins:
+
+#### IMPORTANT
+If you don't use pins 17 and 22, you will need to update your environment variables to reflect the correct pins when you're actually using the RazTot:
 ```bash
 export SERVO_L=<L pin>
 export SERVO_R=<R pin>
 ```
 
 ### Software Setup
-To setup the RazTot software, power up your Raspberry Pi and run the following commands:
+
+You can either [download the RazTot executable here](https://github.com/benbusby/raztot/actions/workflows/build.yml) or build the app manually:
+
+(manual build instructions coming soon)
+
+Once you have the RazTot executable on your Pi, run the following commands to launch the app:
+
 ```bash
-cd
-git clone https://github.com/benbusby/raztot.git
-cd raztot/config
-./setup.sh
+sudo pigpiod # Only if the daemon isn't already running
+raspivid -ISO 0 -t 0 -n -o - -w 640 -h 480 -fps 90 -b 25000000 -cd MJPEG -hf -vf | ./path/to/raztot
 ```
-The setup script will determine what needs to be installed and walk you through each step of the process. It can take quite a while depending on your network speed, but is a mostly hands off process so you don't need to watch it the whole time.
 
-At the end of the script you'll be prompted to create an account with [dataplicity](https://dataplicity.com/), since they provide the ability to host a website on the RazTot without having to mess around with your router at home. It also provides an https url to access the RazTot with, the domain doesn't change between bootups. I've been pretty satisfied with using dataplicity so far, since the service is free (at least for one device) and comes with a domain you can use rather than buying one yourself. If you'd rather just modify your router settings instead, however, there are plenty of guides online.
+The app should now be live on `0.0.0.0:5000`, and you'll be able to control the device with your arrow keys (if you also set up servo support).
 
-Once the script is done, you can run the command
-```bash
-cd ~/raztot
-source run.sh local
-```
-anytime the Pi is powered on to start the Flask app, Janus server, and pigpio daemon whenever the Pi is powered on. If you set up an account with dataplicity, you can log into their web portal to view the domain that was assigned to your Pi. Navigating to that domain should bring you to the main app, where you can start using the RazTot.
-
-### Controls
-- Streaming is controlled via the web app using the Start/Stop Stream button at the top of the web page.
-- Image capture is done via the grey button with the camera icon just below the streaming window.
-- Recording snippets of the stream can be accomplished using the red recording button below the stream once the stream is running.
-- You can view a list of prior recordings, clear all recordings, and log out using the gear icon below the stream.
-- Motion is achieved using the arrow keys on your keyboard, or by pressing the arrow key buttons on the web page. Each key will send a command to the RazTot to move wheels accordingly for whichever direction you are trying to navigate.
-
-## Images
+## Misc
+#### First Build
 ![RazTot First Build](img/first_build.jpg)
-![RazTot Web App](img/web_app.png)
 
 For more images, see [the Imgur album](https://imgur.com/a/DZqkBm9).
 
 ## Credits
 - RazTot logo by [Ren Chu](https://artbyren.com) ([Instagram](https://instagram.com/art.by.ren))
-- Special thanks to [Meetecho/Janus Gateway](https://github.com/meetecho/janus-gateway)
