@@ -8,7 +8,9 @@ The RazTot is an easy DIY project that allows you to remotely control a roving s
 
 ![RaztotGif](img/raztot.gif)
 
-*For a build guide with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
+*Note: This is an old gif using the previous UI, but the functionality is the same. The current UI is a lot less cluttered.*
+
+*For a build guide of the original RazTot with pictures, you can visit [the imgur album for the project here](https://imgur.com/a/DZqkBm9).*
 
 ## Browser Support (Latest Versions)
 
@@ -88,7 +90,7 @@ export SERVO_R=<R pin>
 
 ### Software Setup
 
-You can either [download the RazTot executable here](https://github.com/benbusby/raztot/actions/workflows/build.yml) or build the app manually:
+You can either [download the RazTot executable here](https://github.com/benbusby/raztot/releases/download/v2.0.0/raztot-ARMv7) or build the app manually:
 
 (manual build instructions coming soon)
 
@@ -96,7 +98,7 @@ Once you have the RazTot executable on your Pi, run the following commands to la
 
 ```bash
 sudo pigpiod # Only if the daemon isn't already running
-raspivid -ISO 0 -t 0 -n -o - -w 640 -h 480 -fps 90 -b 25000000 -cd MJPEG -hf -vf | ./path/to/raztot
+raspivid -ISO 0 -t 0 -n -o - -w 640 -h 480 -fps 90 -b 25000000 -cd MJPEG -hf -vf | ./path/to/raztot-ARMv7
 ```
 
 The app should now be live on `0.0.0.0:5000`, and you'll be able to control the device with your arrow keys (if you also set up servo support).
