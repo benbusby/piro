@@ -55,8 +55,8 @@ pub fn servo_control(data: &str) {
 /// * `l_val` - the PWM value for the "left" servo
 /// * `r_val` - the PWM value for the "right" servo
 fn send_command(l_val: u16, r_val: u16) {
-    let servo_l: &str = &*env::var("servo_l").unwrap_or("17".to_string());
-    let servo_r: &str = &*env::var("servo_r").unwrap_or("22".to_string());
+    let servo_l: &str = &*env::var("SERVO_L").unwrap_or("17".to_string());
+    let servo_r: &str = &*env::var("SERVO_R").unwrap_or("22".to_string());
 
     Command::new("pigs")
         .args(&["SERVO", servo_l, &l_val.to_string()])

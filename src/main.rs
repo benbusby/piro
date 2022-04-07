@@ -22,57 +22,63 @@ use {
 };
 
 const HTML: &'static str = "
-<h1>Piro Stream</h1>
-<img src='/stream'>
-<script>
-    var xhr = new XMLHttpRequest();
-    var url = '/servo';
-    var fired = false;
-    document.onkeydown = function(event) {
-        if (fired) {
-            return;
+<head>
+    <title>RazTot</title>
+</head>
+<body style='display: block; margin: auto; text-align: center;'>
+    <h1>RazTot Stream</h1>
+    <img src='/stream'><br>
+    <span>Use your arrow keys to control the servos!</span>
+    <script>
+        var xhr = new XMLHttpRequest();
+        var url = '/servo';
+        var fired = false;
+        document.onkeydown = function(event) {
+            if (fired) {
+                return;
+            }
+
+            fired = true;
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = () => {
+               if (xhr.readyState === 4 && xhr.status === 200) {
+                   console.log('Servo command submitted');
+               }
+            };
+
+            var data = JSON.stringify({
+               left: (event.keyCode || event.which) == '37' ? 1 : 0,
+               up: (event.keyCode || event.which) == '38' ? 1 : 0,
+               right: (event.keyCode || event.which) == '39' ? 1 : 0,
+               down: (event.keyCode || event.which) == '40' ? 1 : 0
+            });
+
+            xhr.send(data);
         }
 
-        fired = true;
+        document.onkeyup = function(event) {
+            fired = false;
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = () => {
+               if (xhr.readyState === 4 && xhr.status === 200) {
+                   console.log('Servo command submitted');
+               }
+            };
 
-        xhr.open('POST', url, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = () => {
-           if (xhr.readyState === 4 && xhr.status === 200) {
-               console.log('Servo command submitted');
-           }
-        };
+            var data = JSON.stringify({
+               left: 0,
+               up: 0,
+               right: 0,
+               down: 0
+            });
 
-        var data = JSON.stringify({
-           left: (event.keyCode || event.which) == '37' ? 1 : 0,
-           up: (event.keyCode || event.which) == '38' ? 1 : 0,
-           right: (event.keyCode || event.which) == '39' ? 1 : 0,
-           down: (event.keyCode || event.which) == '40' ? 1 : 0
-        });
-
-        xhr.send(data);
-    }
-
-    document.onkeyup = function(event) {
-        fired = false;
-        xhr.open('POST', url, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = () => {
-           if (xhr.readyState === 4 && xhr.status === 200) {
-               console.log('Servo command submitted');
-           }
-        };
-
-        var data = JSON.stringify({
-           left: 0,
-           up: 0,
-           right: 0,
-           down: 0
-        });
-
-        xhr.send(data);
-    }
-</script>
+            xhr.send(data);
+        }
+    </script>
+</body>
 ";
 
 async fn serve_req(request: Request<Body>, rx: watch::Receiver<Vec<u8>>) -> Result<Response<Body>> {
