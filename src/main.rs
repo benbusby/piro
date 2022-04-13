@@ -15,6 +15,7 @@ use {
         Server,
     },
 
+    std::process::{Command, ChildStdout, Stdio},
     std::net::SocketAddr,
     std::str,
     tokio::stream::{StreamExt},
@@ -148,6 +149,25 @@ async fn run_server(addr: SocketAddr, rx: watch::Receiver<Vec<u8>>) {
 async fn main() {
     let addr = SocketAddr::from(([0, 0, 0, 0], 5000));
 
+    // raspivid -ISO 0 -t 0 -n -o - -w 640 -h 480 -fps 90 -b 25000000 -cd MJPEG -hf -vf
+
+    let mut child = Command::new("raspivid")
+        .arg("-n")               // Skip preview
+        .args(&["-t", "0"])      // No timeout
+        .args(&["-o", "-"])      // Output to stdout
+        .args(&["-w", "640"])    // Width
+        .args(&["-h", "480"])    // Height
+        .args(&["-fps", "90"])   // Frames per second
+        .args(&["-cd", "MJPEG"]) // Output type
+        .args(&["-ISO", "0"])    // ISO
+        .arg("-hf")              // Horizontal flip
+        .arg("-vf")              // Vertical flip
+        .args(&["-b", "25000000"])  // ??
+        .stdout(Stdio::piped())
+        .spawn().unwrap();
+
+    let stdout: ChildStdout = child.stdout.take().unwrap();
+
     // Single-sender, multiple-receiver tokio::watch channel for sending JPEGs
     // read from stdin to HTTP response streams
     let (tx, rx) = watch::channel(Vec::new());
@@ -159,5 +179,5 @@ async fn main() {
     });
 
     // Read piped mjpeg stream from raspivid
-    stream::stdin_send_loop(tx);
+    stream::stdin_send_loop(tx, stdout);
 }

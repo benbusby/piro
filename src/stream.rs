@@ -1,5 +1,6 @@
 use {
     tokio::sync::watch,
+    std::process::ChildStdout,
     std::io::{BufRead, Read},
 };
 
@@ -20,8 +21,8 @@ fn send_jpeg(tx: &watch::Sender<Vec<u8>>, output_buffer: &mut Vec<u8>, jpeg: &Ve
     }
 }
 
-pub fn stdin_send_loop(tx: watch::Sender<Vec<u8>>) {
-    let mut reader = std::io::BufReader::with_capacity(4096, std::io::stdin()); // Buffered reader for stdin.
+pub fn stdin_send_loop(tx: watch::Sender<Vec<u8>>, stdout: ChildStdout) {
+    let mut reader = std::io::BufReader::with_capacity(4096, stdout); // Buffered reader for stdin.
     let mut output_buffer = Vec::with_capacity(65500); // Output buffer, contains MJPEG headers and JPEG data.
     let mut jpeg = Vec::with_capacity(65500); // Read buffer, contains JPEG data read from stdin.
 
