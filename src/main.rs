@@ -24,10 +24,10 @@ use {
 
 const HTML: &'static str = "
 <head>
-    <title>RazTot</title>
+    <title>Piro</title>
 </head>
 <body style='display: block; margin: auto; text-align: center;'>
-    <h1>RazTot Stream</h1>
+    <h1>Piro Stream</h1>
     <img src='/stream'><br>
     <span>Use your arrow keys to control the servos!</span>
     <script>

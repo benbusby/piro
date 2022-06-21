@@ -23,5 +23,5 @@ jobs:
           args: --target armv7-unknown-linux-gnueabihf --release
       - uses: actions/upload-artifact@v2
         with:
-          name: raztot
-          path: target/armv7-unknown-linux-gnueabihf/release/raztot
+          name: piro
+          path: target/armv7-unknown-linux-gnueabihf/release/piro
